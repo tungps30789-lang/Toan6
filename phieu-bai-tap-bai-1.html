@@ -22,39 +22,42 @@
 
         body {
             font-family: 'Nunito', serif;
-            background: #E2E8F0;
+            background: #CBD5E1;
             color: #000;
-            padding: 70px 10px 40px 10px;
+            padding: 75px 10px 60px 10px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             user-select: none;
             -webkit-user-select: none;
+            touch-action: pan-x pan-y;
+            overflow-x: auto;
         }
 
         /* Thanh công cụ Bút iPad (Sticky Toolbar) */
         .toolbar {
             position: fixed;
-            top: 10px;
+            top: 8px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10000;
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid #CBD5E1;
-            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #94A3B8;
+            padding: 6px 14px;
             border-radius: 40px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
             display: flex;
             align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(10px);
-            max-width: 96vw;
+            gap: 6px;
+            backdrop-filter: blur(12px);
+            max-width: 98vw;
             overflow-x: auto;
         }
 
         .tool-btn {
             background: #F1F5F9;
             border: 2px solid transparent;
-            padding: 6px 12px;
+            padding: 6px 11px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 800;
@@ -63,7 +66,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            transition: all 0.2s;
+            transition: all 0.15s;
             white-space: nowrap;
         }
 
@@ -71,18 +74,15 @@
             background: #EEF2FF;
             border-color: #4F46E5;
             color: #4F46E5;
-            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
         }
 
         .btn-submit {
             background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
             color: white !important;
             border: none !important;
-            padding: 7px 16px !important;
+            padding: 7px 15px !important;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
-        }
-        .btn-submit:hover {
-            transform: scale(1.05);
         }
 
         .color-dot {
@@ -92,7 +92,7 @@
             border: 2px solid white;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
+            transition: transform 0.15s;
         }
         .color-dot.active {
             transform: scale(1.25);
@@ -101,23 +101,64 @@
 
         .divider {
             width: 1px;
-            height: 24px;
+            height: 22px;
             background: #CBD5E1;
             margin: 0 2px;
         }
 
+        /* Vùng điều khiển Phóng to / Thu nhỏ */
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            background: #F8FAFC;
+            padding: 3px 8px;
+            border-radius: 20px;
+            border: 1px solid #E2E8F0;
+        }
+        .zoom-btn {
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-weight: 900;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #1E293B;
+        }
+        .zoom-text {
+            font-size: 12px;
+            font-weight: 800;
+            color: #4338CA;
+            min-width: 42px;
+            text-align: center;
+        }
+
         /* Khung giấy làm bài */
+        .paper-outer-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 50px;
+        }
+
         .paper-container {
             position: relative;
             width: 100%;
             max-width: 850px;
             background: #FFFFFF;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
             border-radius: 12px;
             padding: 35px 40px;
+            transform-origin: top center;
+            transition: transform 0.15s ease-out;
         }
 
-        /* Lớp vẽ Canvas tương tác Apple Pencil */
+        /* Lớp vẽ Canvas tương tác */
         #draw-canvas {
             position: absolute;
             top: 0;
@@ -127,6 +168,9 @@
             z-index: 100;
             touch-action: none;
             cursor: crosshair;
+        }
+        #draw-canvas.pan-mode {
+            pointer-events: none; /* Khi ở chế độ bàn tay, cho phép chạm vuốt trang tự do */
         }
 
         /* Nội dung đề bài bên dưới */
@@ -234,11 +278,6 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .big-submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.5);
         }
 
         /* Popup chúc mừng hoàn thành (Modal) */
@@ -259,67 +298,35 @@
         .modal-card {
             background: #FFFFFF;
             width: 100%;
-            max-width: 520px;
+            max-width: 500px;
             border-radius: 28px;
             padding: 35px 30px;
             text-align: center;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
         }
         @keyframes popIn {
             0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .modal-icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-            animation: bounce 1s infinite alternate;
-        }
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
-        }
-
-        .modal-title {
-            font-size: 22px;
-            font-weight: 900;
-            color: #1E1B4B;
-            margin-bottom: 8px;
-        }
-        .modal-desc {
-            font-size: 14.5px;
-            color: #64748B;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
+        .modal-icon { font-size: 55px; margin-bottom: 8px; }
+        .modal-title { font-size: 21px; font-weight: 900; color: #1E1B4B; margin-bottom: 6px; }
+        .modal-desc { font-size: 14px; color: #64748B; line-height: 1.5; margin-bottom: 18px; }
         .score-picker {
             background: #F8FAFC;
             border: 2px solid #E2E8F0;
             border-radius: 18px;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 14px;
+            margin-bottom: 18px;
         }
-        .score-stars {
-            font-size: 28px;
-            color: #F59E0B;
-            letter-spacing: 4px;
-            margin: 6px 0;
-            cursor: pointer;
-        }
-
-        .modal-btn-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
+        .score-stars { font-size: 28px; color: #F59E0B; letter-spacing: 4px; margin: 4px 0; cursor: pointer; }
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
         .btn-modal {
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 30px;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13.5px;
             cursor: pointer;
             border: none;
             text-decoration: none;
@@ -327,23 +334,18 @@
             align-items: center;
             gap: 6px;
         }
-        .btn-modal-primary {
-            background: #4F46E5;
-            color: white;
-        }
-        .btn-modal-secondary {
-            background: #F1F5F9;
-            color: #475569;
-        }
+        .btn-modal-primary { background: #4F46E5; color: white; }
+        .btn-modal-secondary { background: #F1F5F9; color: #475569; }
     </style>
 </head>
 <body>
 
-    <!-- THANH CÔNG CỤ BÚT IPAD -->
+    <!-- THANH CÔNG CỤ BÚT & PHÓNG TO THU NHỎ IPAD -->
     <div class="toolbar">
         <button class="tool-btn active" id="btn-pen" onclick="setTool('pen')">✏️ Bút viết</button>
         <button class="tool-btn" id="btn-highlighter" onclick="setTool('highlighter')">🖍️ Dạ quang</button>
-        <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 Tẩy xóa</button>
+        <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 Tẩy</button>
+        <button class="tool-btn" id="btn-hand" onclick="setTool('hand')" title="Chế độ chỉ cuộn trang & phóng to (không dính mực)">✋ Cuộn/Zoom</button>
         
         <div class="divider"></div>
         
@@ -355,8 +357,18 @@
 
         <div class="divider"></div>
 
-        <button class="tool-btn" onclick="undo()" title="Hoàn tác nét vẽ">↩️ Lùi lại</button>
-        <button class="tool-btn" onclick="clearCanvas()" style="color: #DC2626;" title="Xóa toàn bộ bài làm">🗑️ Xóa</button>
+        <!-- BỘ ĐIỀU KHIỂN PHÓNG TO / THU NHỎ -->
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="changeZoom(-0.25)" title="Thu nhỏ">−</button>
+            <span class="zoom-text" id="zoom-val">100%</span>
+            <button class="zoom-btn" onclick="changeZoom(0.25)" title="Phóng to">+</button>
+            <button class="zoom-btn" onclick="resetZoom()" style="width: auto; border-radius: 12px; padding: 0 6px; font-size: 11px;" title="Về 100%">100%</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" onclick="undo()" title="Hoàn tác nét vẽ">↩️</button>
+        <button class="tool-btn" onclick="clearCanvas()" style="color: #DC2626;" title="Xóa toàn bộ bài làm">🗑️</button>
         
         <div class="divider"></div>
 
@@ -364,145 +376,147 @@
         <button class="tool-btn btn-submit" onclick="submitHomework()">🚀 Nộp Bài</button>
     </div>
 
-    <!-- KHUNG TỜ GIẤY BÀI TẬP -->
-    <div class="paper-container" id="paper">
-        
-        <!-- Canvas vẽ đè lên trang giấy -->
-        <canvas id="draw-canvas"></canvas>
+    <!-- KHUNG TỜ GIẤY BÀI TẬP (CÓ HỖ TRỢ ZOOM) -->
+    <div class="paper-outer-wrapper">
+        <div class="paper-container" id="paper">
+            
+            <!-- Canvas vẽ đè lên trang giấy -->
+            <canvas id="draw-canvas"></canvas>
 
-        <!-- LỚP NỘI DUNG ĐỀ BÀI -->
-        <div class="content-layer">
-            <a href="index.html" class="home-link">← 🏠 Quay lại Mục Lục Bài Học</a>
+            <!-- LỚP NỘI DUNG ĐỀ BÀI -->
+            <div class="content-layer">
+                <a href="index.html" class="home-link">← 🏠 Quay lại Mục Lục Bài Học</a>
 
-            <table class="header-table">
-                <tr>
-                    <td style="width: 55%;">
-                        <b>HỌ VÀ TÊN:</b> PHẠM PHƯƠNG THẢO<br>
-                        <b>LỚP:</b> 6 ..... &nbsp;&nbsp;|&nbsp;&nbsp; <b>NGÀY:</b> ..... / ..... / 2026
-                    </td>
-                    <td style="width: 45%; text-align: right;">
-                        <b>PHIẾU HỌC TẬP TOÁN 6</b><br>
-                        <b>Thời gian làm bài:</b> 45 phút
-                    </td>
-                </tr>
-            </table>
+                <table class="header-table">
+                    <tr>
+                        <td style="width: 55%;">
+                            <b>HỌ VÀ TÊN:</b> PHẠM PHƯƠNG THẢO<br>
+                            <b>LỚP:</b> 6 ..... &nbsp;&nbsp;|&nbsp;&nbsp; <b>NGÀY:</b> ..... / ..... / 2026
+                        </td>
+                        <td style="width: 45%; text-align: right;">
+                            <b>PHIẾU HỌC TẬP TOÁN 6</b><br>
+                            <b>Thời gian làm bài:</b> 45 phút
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="title">BÀI 1: TẬP HỢP VÀ PHẦN TỬ CỦA TẬP HỢP</div>
-            <div class="subtitle">(Phương Thảo dùng bút iPad làm bài trực tiếp vào các dòng bên dưới)</div>
+                <div class="title">BÀI 1: TẬP HỢP VÀ PHẦN TỬ CỦA TẬP HỢP</div>
+                <div class="subtitle">(Phương Thảo dùng bút iPad làm bài trực tiếp vào các dòng bên dưới)</div>
 
-            <table class="score-box">
-                <tr>
-                    <td style="width: 30%; font-weight: bold;">ĐIỂM SỐ</td>
-                    <td style="width: 70%; font-weight: bold;">LỜI PHÊ CỦA BỐ / THẦY CÔ</td>
-                </tr>
-                <tr>
-                    <td style="height: 50px; font-size: 18pt; font-weight: bold;" id="teacher-score"></td>
-                    <td id="teacher-comment"></td>
-                </tr>
-            </table>
+                <table class="score-box">
+                    <tr>
+                        <td style="width: 30%; font-weight: bold;">ĐIỂM SỐ</td>
+                        <td style="width: 70%; font-weight: bold;">LỜI PHÊ CỦA BỐ / THẦY CÔ</td>
+                    </tr>
+                    <tr>
+                        <td style="height: 50px; font-size: 18pt; font-weight: bold;" id="teacher-score"></td>
+                        <td id="teacher-comment"></td>
+                    </tr>
+                </table>
 
-            <!-- PHẦN 1 -->
-            <div class="section-title">PHẦN I. TRẮC NGHIỆM VÀ NHẬN BIẾT (2,0 điểm)</div>
+                <!-- PHẦN 1 -->
+                <div class="section-title">PHẦN I. TRẮC NGHIỆM VÀ NHẬN BIẾT (2,0 điểm)</div>
 
-            <div class="question">
-                <span class="question-title">Câu 1 (1,0 điểm):</span> Dùng bút điền ký hiệu thích hợp (∈ hoặc ∉) vào chỗ chấm:
-                <div class="grid-options">
-                    <span>a) Cho tập hợp <i>A</i> = {0; 2; 4; 6; 8}:</span>
-                    <span>4 ..... <i>A</i></span>
-                    <span>5 ..... <i>A</i></span>
-                    <span>10 ..... <i>A</i></span>
+                <div class="question">
+                    <span class="question-title">Câu 1 (1,0 điểm):</span> Dùng bút điền ký hiệu thích hợp (∈ hoặc ∉) vào chỗ chấm:
+                    <div class="grid-options">
+                        <span>a) Cho tập hợp <i>A</i> = {0; 2; 4; 6; 8}:</span>
+                        <span>4 ..... <i>A</i></span>
+                        <span>5 ..... <i>A</i></span>
+                        <span>10 ..... <i>A</i></span>
+                    </div>
+                    <div class="grid-options">
+                        <span>b) Cho hai tập hợp <b>N</b> và <b>N*</b>:</span>
+                        <span>0 ..... <b>N</b></span>
+                        <span>0 ..... <b>N*</b></span>
+                        <span>2026 ..... <b>N*</b></span>
+                    </div>
                 </div>
-                <div class="grid-options">
-                    <span>b) Cho hai tập hợp <b>N</b> và <b>N*</b>:</span>
-                    <span>0 ..... <b>N</b></span>
-                    <span>0 ..... <b>N*</b></span>
-                    <span>2026 ..... <b>N*</b></span>
+
+                <div class="question">
+                    <span class="question-title">Câu 2 (1,0 điểm):</span> Viết chữ <b>Đ (Đúng)</b> hoặc <b>S (Sai)</b> vào các ô vuông:
+                    <div style="margin-top: 6px; line-height: 1.9;">
+                        a) Cách viết <i>B</i> = (1; 2; 3) là đúng cú pháp tập hợp. &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                        b) Tập hợp <i>C</i> = {Mèo; Chó} và tập hợp <i>D</i> = {Chó; Mèo} là hai tập hợp bằng nhau. &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                        c) Trong một tập hợp, một phần tử có thể được viết lặp lại 2 lần. &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                        d) Giao của hai tập hợp <b>N</b> và <b>N*</b> là <b>N*</b> (tức <b>N</b> ∩ <b>N*</b> = <b>N*</b>). &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+                    </div>
                 </div>
-            </div>
 
-            <div class="question">
-                <span class="question-title">Câu 2 (1,0 điểm):</span> Viết chữ <b>Đ (Đúng)</b> hoặc <b>S (Sai)</b> vào các ô vuông:
-                <div style="margin-top: 6px; line-height: 1.9;">
-                    a) Cách viết <i>B</i> = (1; 2; 3) là đúng cú pháp tập hợp. &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-                    b) Tập hợp <i>C</i> = {Mèo; Chó} và tập hợp <i>D</i> = {Chó; Mèo} là hai tập hợp bằng nhau. &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-                    c) Trong một tập hợp, một phần tử có thể được viết lặp lại 2 lần. &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-                    d) Giao của hai tập hợp <b>N</b> và <b>N*</b> là <b>N*</b> (tức <b>N</b> ∩ <b>N*</b> = <b>N*</b>). &nbsp; [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+                <!-- PHẦN 2 -->
+                <div class="section-title">PHẦN II. TỰ LUẬN CƠ BẢN (4,0 điểm)</div>
+
+                <div class="question">
+                    <span class="question-title">Câu 3 (1,5 điểm):</span>
+                    <div style="margin-top: 4px;">a) Viết tập hợp <i>T</i> các chữ cái có mặt trong cụm từ: <b>"PHAM PHUONG THAO"</b>.</div>
+                    <div class="dots"></div>
+                    <div style="margin-top: 4px;">b) Viết tập hợp <i>H</i> gồm các tháng trong năm có <b>31 ngày</b>.</div>
+                    <div class="dots"></div>
                 </div>
-            </div>
 
-            <!-- PHẦN 2 -->
-            <div class="section-title">PHẦN II. TỰ LUẬN CƠ BẢN (4,0 điểm)</div>
-
-            <div class="question">
-                <span class="question-title">Câu 3 (1,5 điểm):</span>
-                <div style="margin-top: 4px;">a) Viết tập hợp <i>T</i> các chữ cái có mặt trong cụm từ: <b>"PHAM PHUONG THAO"</b>.</div>
-                <div class="dots"></div>
-                <div style="margin-top: 4px;">b) Viết tập hợp <i>H</i> gồm các tháng trong năm có <b>31 ngày</b>.</div>
-                <div class="dots"></div>
-            </div>
-
-            <div class="question">
-                <span class="question-title">Câu 4 (1,5 điểm):</span>
-                <div style="margin-top: 4px;">a) Cho tập hợp <i>M</i> = {<i>x</i> ∈ <b>N</b> | 5 &lt; <i>x</i> ≤ 10}. Viết lại tập hợp <i>M</i> bằng cách liệt kê các phần tử.</div>
-                <div class="dots"></div>
-                <div style="margin-top: 4px;">b) Cho tập hợp <i>P</i> = {<i>x</i> ∈ <b>N*</b> | <i>x</i> &lt; 6}. Viết lại tập hợp <i>P</i> bằng cách liệt kê các phần tử.</div>
-                <div class="dots"></div>
-                <div style="margin-top: 4px;">c) Cho tập hợp <i>Q</i> = {0; 2; 4; 6; 8; 10}. Viết lại tập hợp <i>Q</i> bằng cách chỉ ra tính chất đặc trưng của các phần tử.</div>
-                <div class="dots"></div>
-            </div>
-
-            <div class="question">
-                <span class="question-title">Câu 5 (1,0 điểm):</span> Mẹ nhờ Phương Thảo soạn đồ dùng để đi cắm trại. Danh sách gồm: <i>1 lều bạt, 2 đèn pin, 4 chai nước suối, 1 hộp cứu thương, 2 đèn pin dự phòng</i>.
-                <br>Hãy viết tập hợp <i>S</i> các <u>loại đồ dùng</u> cần mang đi và cho biết tập hợp <i>S</i> có bao nhiêu phần tử?
-                <div class="dots"></div>
-                <div class="dots"></div>
-            </div>
-
-            <!-- PHẦN 3 -->
-            <div class="section-title">PHẦN III. VẬN DỤNG VÀ GIAO TẬP HỢP (2,5 điểm)</div>
-
-            <div class="question">
-                <span class="question-title">Câu 6 (1,5 điểm):</span> Cho hai tập hợp: <i>A</i> = {1; 2; 3; 4; 5; 6} và <i>B</i> = {2; 4; 6; 8; 10}.
-                <div style="margin-top: 4px;">a) Tìm tập hợp <i>A</i> ∩ <i>B</i>.</div>
-                <div class="dots"></div>
-                <div style="margin-top: 4px;">b) Dùng bút vẽ sơ đồ Venn biểu diễn hai tập hợp <i>A</i> và <i>B</i> vào khung bên dưới:</div>
-                <div style="height: 120px; border: 2px dashed #94A3B8; margin: 8px 0; border-radius: 8px; background: rgba(248, 250, 252, 0.5);"></div>
-                <div style="margin-top: 4px;">c) Cho tập hợp <i>C</i> = {7; 9}. Hãy tìm <i>A</i> ∩ <i>C</i>.</div>
-                <div class="dots"></div>
-            </div>
-
-            <div class="question">
-                <span class="question-title">Câu 7 (1,0 điểm):</span> Tính số phần tử của các tập hợp sau:
-                <div style="margin-top: 4px;">a) <i>E</i> = {15; 16; 17; 18; ...; 85}</div>
-                <div class="dots"></div>
-                <div style="margin-top: 4px;">b) <i>F</i> = {10; 12; 14; 16; ...; 98}</div>
-                <div class="dots"></div>
-            </div>
-
-            <!-- PHẦN 4 -->
-            <div class="section-title">PHẦN IV. BÀI TOÁN NÂNG CAO (1,5 điểm)</div>
-
-            <div class="question">
-                <span class="question-title">Câu 8 (1,5 điểm):</span> Lớp 6A của Phương Thảo có 40 bạn học sinh. Trong một buổi đăng ký ngoại khóa:
-                <div style="margin: 6px 0 6px 15px;">
-                    • Có <b>25 bạn</b> đăng ký Câu lạc bộ Vẽ tranh.<br>
-                    • Có <b>20 bạn</b> đăng ký Câu lạc bộ Âm nhạc.<br>
-                    • Có <b>10 bạn</b> đăng ký tham gia cả hai câu lạc bộ trên.
+                <div class="question">
+                    <span class="question-title">Câu 4 (1,5 điểm):</span>
+                    <div style="margin-top: 4px;">a) Cho tập hợp <i>M</i> = {<i>x</i> ∈ <b>N</b> | 5 &lt; <i>x</i> ≤ 10}. Viết lại tập hợp <i>M</i> bằng cách liệt kê các phần tử.</div>
+                    <div class="dots"></div>
+                    <div style="margin-top: 4px;">b) Cho tập hợp <i>P</i> = {<i>x</i> ∈ <b>N*</b> | <i>x</i> &lt; 6}. Viết lại tập hợp <i>P</i> bằng cách liệt kê các phần tử.</div>
+                    <div class="dots"></div>
+                    <div style="margin-top: 4px;">c) Cho tập hợp <i>Q</i> = {0; 2; 4; 6; 8; 10}. Viết lại tập hợp <i>Q</i> bằng cách chỉ ra tính chất đặc trưng của các phần tử.</div>
+                    <div class="dots"></div>
                 </div>
-                Hỏi lớp 6A có bao nhiêu bạn học sinh <b>không đăng ký tham gia</b> câu lạc bộ nào trong hai câu lạc bộ trên?
-                <div class="dots"></div>
-                <div class="dots"></div>
-                <div class="dots"></div>
-                <div class="dots"></div>
-            </div>
 
-            <!-- NÚT NỘP BÀI CUỐI TRANG -->
-            <div class="bottom-submit-container">
-                <button class="big-submit-btn" onclick="submitHomework()">
-                    🎉 HOÀN THÀNH & NỘP BÀI CHO BỐ 🎉
-                </button>
-            </div>
+                <div class="question">
+                    <span class="question-title">Câu 5 (1,0 điểm):</span> Mẹ nhờ Phương Thảo soạn đồ dùng để đi cắm trại. Danh sách gồm: <i>1 lều bạt, 2 đèn pin, 4 chai nước suối, 1 hộp cứu thương, 2 đèn pin dự phòng</i>.
+                    <br>Hãy viết tập hợp <i>S</i> các <u>loại đồ dùng</u> cần mang đi và cho biết tập hợp <i>S</i> có bao nhiêu phần tử?
+                    <div class="dots"></div>
+                    <div class="dots"></div>
+                </div>
 
+                <!-- PHẦN 3 -->
+                <div class="section-title">PHẦN III. VẬN DỤNG VÀ GIAO TẬP HỢP (2,5 điểm)</div>
+
+                <div class="question">
+                    <span class="question-title">Câu 6 (1,5 điểm):</span> Cho hai tập hợp: <i>A</i> = {1; 2; 3; 4; 5; 6} và <i>B</i> = {2; 4; 6; 8; 10}.
+                    <div style="margin-top: 4px;">a) Tìm tập hợp <i>A</i> ∩ <i>B</i>.</div>
+                    <div class="dots"></div>
+                    <div style="margin-top: 4px;">b) Dùng bút vẽ sơ đồ Venn biểu diễn hai tập hợp <i>A</i> và <i>B</i> vào khung bên dưới:</div>
+                    <div style="height: 120px; border: 2px dashed #94A3B8; margin: 8px 0; border-radius: 8px; background: rgba(248, 250, 252, 0.5);"></div>
+                    <div style="margin-top: 4px;">c) Cho tập hợp <i>C</i> = {7; 9}. Hãy tìm <i>A</i> ∩ <i>C</i>.</div>
+                    <div class="dots"></div>
+                </div>
+
+                <div class="question">
+                    <span class="question-title">Câu 7 (1,0 điểm):</span> Tính số phần tử của các tập hợp sau:
+                    <div style="margin-top: 4px;">a) <i>E</i> = {15; 16; 17; 18; ...; 85}</div>
+                    <div class="dots"></div>
+                    <div style="margin-top: 4px;">b) <i>F</i> = {10; 12; 14; 16; ...; 98}</div>
+                    <div class="dots"></div>
+                </div>
+
+                <!-- PHẦN 4 -->
+                <div class="section-title">PHẦN IV. BÀI TOÁN NÂNG CAO (1,5 điểm)</div>
+
+                <div class="question">
+                    <span class="question-title">Câu 8 (1,5 điểm):</span> Lớp 6A của Phương Thảo có 40 bạn học sinh. Trong một buổi đăng ký ngoại khóa:
+                    <div style="margin: 6px 0 6px 15px;">
+                        • Có <b>25 bạn</b> đăng ký Câu lạc bộ Vẽ tranh.<br>
+                        • Có <b>20 bạn</b> đăng ký Câu lạc bộ Âm nhạc.<br>
+                        • Có <b>10 bạn</b> đăng ký tham gia cả hai câu lạc bộ trên.
+                    </div>
+                    Hỏi lớp 6A có bao nhiêu bạn học sinh <b>không đăng ký tham gia</b> câu lạc bộ nào trong hai câu lạc bộ trên?
+                    <div class="dots"></div>
+                    <div class="dots"></div>
+                    <div class="dots"></div>
+                    <div class="dots"></div>
+                </div>
+
+                <!-- NÚT NỘP BÀI CUỐI TRANG -->
+                <div class="bottom-submit-container">
+                    <button class="big-submit-btn" onclick="submitHomework()">
+                        🎉 HOÀN THÀNH & NỘP BÀI CHO BỐ 🎉
+                    </button>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -529,27 +543,34 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT XỬ LÝ VẼ BẰNG APPLE PENCIL / TOUCH -->
+    <!-- JAVASCRIPT XỬ LÝ VẼ & PHÒNG CHỐNG DÍNH MỰC KHI CHỤM 2 NGÓN TAY -->
     <script>
         const canvas = document.getElementById('draw-canvas');
         const ctx = canvas.getContext('2d');
         const paper = document.getElementById('paper');
 
-        let currentTool = 'pen'; // 'pen', 'highlighter', 'eraser'
+        let currentTool = 'pen'; // 'pen', 'highlighter', 'eraser', 'hand'
         let currentColor = '#2563EB';
         let isDrawing = false;
         let lastX = 0, lastY = 0;
         let strokesHistory = [];
         let currentStroke = [];
+        
+        let currentZoom = 1.0;
+        const activeTouches = new Map(); // Quản lý đa điểm chạm để chặn dính mực khi dùng 2 ngón
+        let basePaperWidth = 850;
+        let basePaperHeight = 1200;
 
         function resizeCanvas() {
             const rect = paper.getBoundingClientRect();
+            basePaperWidth = paper.offsetWidth;
+            basePaperHeight = paper.offsetHeight;
             const dpr = window.devicePixelRatio || 1;
 
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            canvas.style.width = rect.width + 'px';
-            canvas.style.height = rect.height + 'px';
+            canvas.width = basePaperWidth * dpr;
+            canvas.height = basePaperHeight * dpr;
+            canvas.style.width = basePaperWidth + 'px';
+            canvas.style.height = basePaperHeight + 'px';
 
             ctx.scale(dpr, dpr);
             ctx.lineCap = 'round';
@@ -560,15 +581,31 @@
         window.addEventListener('load', resizeCanvas);
         window.addEventListener('resize', resizeCanvas);
 
+        // Chuyển đổi tọa độ chính xác bất kể đang phóng to bao nhiêu lần
         function getCoords(e) {
             const rect = canvas.getBoundingClientRect();
+            const scaleFactorX = basePaperWidth / rect.width;
+            const scaleFactorY = basePaperHeight / rect.height;
             return {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
+                x: (e.clientX - rect.left) * scaleFactorX,
+                y: (e.clientY - rect.top) * scaleFactorY
             };
         }
 
-        function startDrawing(e) {
+        // BẮT ĐẦU CHẠM
+        function handlePointerDown(e) {
+            activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+            // NẾU CÓ TỪ 2 NGÓN TAY TRỞ LÊN: HỦY NGAY LẬP TỨC NÉT VẼ ĐỂ KHÔNG BỊ DÍNH MỰC!
+            if (activeTouches.size >= 2 || currentTool === 'hand') {
+                if (isDrawing) {
+                    isDrawing = false;
+                    currentStroke = [];
+                    redrawAll();
+                }
+                return;
+            }
+
             isDrawing = true;
             const pos = getCoords(e);
             lastX = pos.x;
@@ -580,8 +617,17 @@
             }];
         }
 
-        function draw(e) {
-            if (!isDrawing) return;
+        // DI CHUYỂN BÚT / NGÓN TAY
+        function handlePointerMove(e) {
+            if (activeTouches.has(e.pointerId)) {
+                activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+            }
+
+            // Nếu chạm 2 ngón tay (đang phóng to hoặc cuộn trang), tuyệt đối không vẽ mực
+            if (activeTouches.size >= 2 || currentTool === 'hand' || !isDrawing) {
+                return;
+            }
+
             e.preventDefault();
             const pos = getCoords(e);
 
@@ -591,11 +637,11 @@
 
             if (currentTool === 'eraser') {
                 ctx.globalCompositeOperation = 'destination-out';
-                ctx.lineWidth = 24;
+                ctx.lineWidth = 26;
             } else if (currentTool === 'highlighter') {
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
-                ctx.lineWidth = 18;
+                ctx.lineWidth = 20;
             } else {
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.strokeStyle = currentColor;
@@ -611,28 +657,39 @@
             }
         }
 
-        function stopDrawing() {
-            if (isDrawing) {
+        // NHẤC TAY / KẾT THÚC
+        function handlePointerUp(e) {
+            activeTouches.delete(e.pointerId);
+            if (isDrawing && activeTouches.size === 0) {
                 isDrawing = false;
-                if (currentStroke.length > 0) {
+                if (currentStroke.length > 0 && currentStroke[0].points.length > 1) {
                     strokesHistory.push(currentStroke[0]);
                     saveToLocalStorage();
                 }
+                currentStroke = [];
             }
         }
 
-        canvas.addEventListener('pointerdown', startDrawing);
-        canvas.addEventListener('pointermove', draw);
-        canvas.addEventListener('pointerup', stopDrawing);
-        canvas.addEventListener('pointercancel', stopDrawing);
-        canvas.addEventListener('pointerleave', stopDrawing);
+        canvas.addEventListener('pointerdown', handlePointerDown);
+        canvas.addEventListener('pointermove', handlePointerMove);
+        canvas.addEventListener('pointerup', handlePointerUp);
+        canvas.addEventListener('pointercancel', handlePointerUp);
+        canvas.addEventListener('pointerleave', handlePointerUp);
 
+        // ĐỔI CÔNG CỤ
         function setTool(tool) {
             currentTool = tool;
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            
             if (tool === 'pen') document.getElementById('btn-pen').classList.add('active');
             if (tool === 'highlighter') document.getElementById('btn-highlighter').classList.add('active');
             if (tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
+            if (tool === 'hand') {
+                document.getElementById('btn-hand').classList.add('active');
+                canvas.classList.add('pan-mode');
+            } else {
+                canvas.classList.remove('pan-mode');
+            }
         }
 
         function setColor(color, elem) {
@@ -640,6 +697,24 @@
             setTool('pen');
             document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
             if (elem) elem.classList.add('active');
+        }
+
+        // HỆ THỐNG PHÓNG TO / THU NHỎ (ZOOM SYSTEM)
+        function changeZoom(delta) {
+            let newZoom = Math.round((currentZoom + delta) * 100) / 100;
+            if (newZoom < 0.75) newZoom = 0.75;
+            if (newZoom > 2.25) newZoom = 2.25;
+            setZoom(newZoom);
+        }
+
+        function resetZoom() {
+            setZoom(1.0);
+        }
+
+        function setZoom(zoom) {
+            currentZoom = zoom;
+            paper.style.transform = `scale(${zoom})`;
+            document.getElementById('zoom-val').innerText = Math.round(zoom * 100) + '%';
         }
 
         function redrawAll() {
@@ -651,11 +726,11 @@
 
                 if (stroke.tool === 'eraser') {
                     ctx.globalCompositeOperation = 'destination-out';
-                    ctx.lineWidth = 24;
+                    ctx.lineWidth = 26;
                 } else if (stroke.tool === 'highlighter') {
                     ctx.globalCompositeOperation = 'source-over';
                     ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
-                    ctx.lineWidth = 18;
+                    ctx.lineWidth = 20;
                 } else {
                     ctx.globalCompositeOperation = 'source-over';
                     ctx.strokeStyle = stroke.color;
@@ -699,30 +774,13 @@
             }
         } catch (e) {}
 
-        // HIỆU ỨNG PHÁO HOA & NỘP BÀI
         function submitHomework() {
             document.getElementById('submit-modal').style.display = 'flex';
-            
-            // Bắn pháo hoa Confetti chúc mừng
             if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 120,
-                    spread: 80,
-                    origin: { y: 0.6 }
-                });
+                confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
                 setTimeout(() => {
-                    confetti({
-                        particleCount: 80,
-                        angle: 60,
-                        spread: 55,
-                        origin: { x: 0 }
-                    });
-                    confetti({
-                        particleCount: 80,
-                        angle: 120,
-                        spread: 55,
-                        origin: { x: 1 }
-                    });
+                    confetti({ particleCount: 80, angle: 60, spread: 55, origin: { x: 0 } });
+                    confetti({ particleCount: 80, angle: 120, spread: 55, origin: { x: 1 } });
                 }, 300);
             }
         }
