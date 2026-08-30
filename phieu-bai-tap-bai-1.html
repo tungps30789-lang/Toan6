@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Phiếu Bài Tập Toán 6 - Bài 1: Tập Hợp (Phạm Phương Thảo)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm 20mm;
+        }
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 13pt;
+            line-height: 1.4;
+            color: #000;
+            background: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .header-table td {
+            vertical-align: top;
+        }
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 15pt;
+            text-transform: uppercase;
+            margin: 15px 0 5px 0;
+        }
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            font-size: 12pt;
+            margin-bottom: 20px;
+        }
+        .score-box {
+            border: 1.5px solid #000;
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        .score-box td {
+            border: 1px solid #000;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 13pt;
+            text-transform: uppercase;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+        }
+        .question {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        .question-title {
+            font-weight: bold;
+        }
+        .dots {
+            border-bottom: 1px dotted #666;
+            height: 24px;
+            margin-bottom: 4px;
+        }
+        .grid-options {
+            display: flex;
+            justify-content: space-between;
+            margin: 6px 0 10px 0;
+        }
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .btn-print:hover {
+            background: #1D4ED8;
+        }
+        @media print {
+            .btn-print { display: none; }
+            body { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-print" onclick="window.print()">🖨️ In phiếu bài tập (Ctrl + P)</button>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 55%;">
+                <b>HỌ VÀ TÊN:</b> PHẠM PHƯƠNG THẢO<br>
+                <b>LỚP:</b> 6 ..... &nbsp;&nbsp;|&nbsp;&nbsp; <b>NGÀY:</b> ..... / ..... / 2026
+            </td>
+            <td style="width: 45%; text-align: right;">
+                <b>PHIẾU HỌC TẬP TOÁN 6</b><br>
+                <b>Thời gian làm bài:</b> 45 phút
+            </td>
+        </tr>
+    </table>
+
+    <div class="title">BÀI 1: TẬP HỢP VÀ PHẦN TỬ CỦA TẬP HỢP</div>
+    <div class="subtitle">(Đề kiểm tra & Luyện tập chuẩn kiến thức)</div>
+
+    <table class="score-box">
+        <tr>
+            <td style="width: 30%; font-weight: bold;">ĐIỂM SỐ</td>
+            <td style="width: 70%; font-weight: bold;">LỜI PHÊ CỦA BỐ / THẦY CÔ</td>
+        </tr>
+        <tr>
+            <td style="height: 50px; font-size: 18pt; font-weight: bold;"></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <!-- PHẦN 1 -->
+    <div class="section-title">PHẦN I. TRẮC NGHIỆM VÀ NHẬN BIẾT (2,0 điểm)</div>
+
+    <div class="question">
+        <span class="question-title">Câu 1 (1,0 điểm):</span> Điền ký hiệu thích hợp (&isin; hoặc &notin;) vào chỗ chấm:
+        <div class="grid-options">
+            <span>a) Cho tập hợp $A = \{0; 2; 4; 6; 8\}$:</span>
+            <span>$4 \dots\dots A$</span>
+            <span>$5 \dots\dots A$</span>
+            <span>$10 \dots\dots A$</span>
+        </div>
+        <div class="grid-options">
+            <span>b) Cho hai tập hợp $\mathbb{N}$ và $\mathbb{N}^*$:</span>
+            <span>$0 \dots\dots \mathbb{N}$</span>
+            <span>$0 \dots\dots \mathbb{N}^*$</span>
+            <span>$2026 \dots\dots \mathbb{N}^*$</span>
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-title">Câu 2 (1,0 điểm):</span> Điền <b>Đ (Đúng)</b> hoặc <b>S (Sai)</b> vào ô vuông $[\quad]$:
+        <div style="margin-top: 5px; line-height: 1.8;">
+            a) Cách viết $B = (1; 2; 3)$ là đúng cú pháp tập hợp. &nbsp; $[\quad\quad]$<br>
+            b) Tập hợp $C = \{\text{Mèo}; \text{Chó}\}$ và tập hợp $D = \{\text{Chó}; \text{Mèo}\}$ là hai tập hợp bằng nhau. &nbsp; $[\quad\quad]$<br>
+            c) Trong một tập hợp, một phần tử có thể được viết lặp lại 2 lần. &nbsp; $[\quad\quad]$<br>
+            d) Giao của hai tập hợp $\mathbb{N}$ và $\mathbb{N}^*$ là $\mathbb{N}^*$ (tức $\mathbb{N} \cap \mathbb{N}^* = \mathbb{N}^*$). &nbsp; $[\quad\quad]$
+        </div>
+    </div>
+
+    <!-- PHẦN 2 -->
+    <div class="section-title">PHẦN II. TỰ LUẬN CƠ BẢN (4,0 điểm)</div>
+
+    <div class="question">
+        <span class="question-title">Câu 3 (1,5 điểm):</span>
+        <div style="margin-top: 4px;">a) Viết tập hợp $T$ các chữ cái có mặt trong cụm từ: <b>"PHAM PHUONG THAO"</b>.</div>
+        <div class="dots"></div>
+        <div style="margin-top: 4px;">b) Viết tập hợp $H$ gồm các tháng trong năm có <b>31 ngày</b>.</div>
+        <div class="dots"></div>
+    </div>
+
+    <div class="question">
+        <span class="question-title">Câu 4 (1,5 điểm):</span>
+        <div style="margin-top: 4px;">a) Cho tập hợp $M = \{x \in \mathbb{N} \mid 5 < x \le 10\}$. Viết lại tập hợp $M$ bằng cách liệt kê các phần tử.</div>
+        <div class="dots"></div>
+        <div style="margin-top: 4px;">b) Cho tập hợp $P = \{x \in \mathbb{N}^* \mid x < 6\}$. Viết lại tập hợp $P$ bằng cách liệt kê các phần tử.</div>
+        <div class="dots"></div>
+        <div style="margin-top: 4px;">c) Cho tập hợp $Q = \{0; 2; 4; 6; 8; 10\}$. Viết lại tập hợp $Q$ bằng cách chỉ ra tính chất đặc trưng của các phần tử.</div>
+        <div class="dots"></div>
+    </div>
+
+    <div class="question">
+        <span class="question-title">Câu 5 (1,0 điểm):</span> Mẹ nhờ Phương Thảo soạn đồ dùng để đi cắm trại. Danh sách gồm: <i>1 lều bạt, 2 đèn pin, 4 chai nước suối, 1 hộp cứu thương, 2 đèn pin dự phòng</i>.
+        <br>Hãy viết tập hợp $S$ các <u>loại đồ dùng</u> cần mang đi và cho biết tập hợp $S$ có bao nhiêu phần tử?
+        <div class="dots"></div>
+        <div class="dots"></div>
+    </div>
+
+    <!-- PHẦN 3 -->
+    <div class="section-title">PHẦN III. VẬN DỤNG VÀ GIAO TẬP HỢP (2,5 điểm)</div>
+
+    <div class="question">
+        <span class="question-title">Câu 6 (1,5 điểm):</span> Cho hai tập hợp: $A = \{1; 2; 3; 4; 5; 6\}$ và $B = \{2; 4; 6; 8; 10\}$.
+        <div style="margin-top: 4px;">a) Tìm tập hợp $A \cap B$.</div>
+        <div class="dots"></div>
+        <div style="margin-top: 4px;">b) Biểu diễn hai tập hợp $A$ và $B$ bằng sơ đồ Venn.</div>
+        <div style="height: 90px; border: 1px dashed #999; margin: 6px 0; border-radius: 6px;"></div>
+        <div style="margin-top: 4px;">c) Cho tập hợp $C = \{7; 9\}$. Hãy tìm $A \cap C$.</div>
+        <div class="dots"></div>
+    </div>
+
+    <div class="question">
+        <span class="question-title">Câu 7 (1,0 điểm):</span> Tính số phần tử của các tập hợp sau:
+        <div style="margin-top: 4px;">a) $E = \{15; 16; 17; 18; \dots; 85\}$</div>
+        <div class="dots"></div>
+        <div style="margin-top: 4px;">b) $F = \{10; 12; 14; 16; \dots; 98\}$</div>
+        <div class="dots"></div>
+    </div>
+
+    <!-- PHẦN 4 -->
+    <div class="section-title">PHẦN IV. BÀI TOÁN NÂNG CAO (1,5 điểm)</div>
+
+    <div class="question">
+        <span class="question-title">Câu 8 (1,5 điểm):</span> Lớp 6A của Phương Thảo có 40 bạn học sinh. Trong một buổi đăng ký ngoại khóa:
+        <div style="margin: 4px 0 4px 15px;">
+            • Có <b>25 bạn</b> đăng ký Câu lạc bộ Vẽ tranh.<br>
+            • Có <b>20 bạn</b> đăng ký Câu lạc bộ Âm nhạc.<br>
+            • Có <b>10 bạn</b> đăng ký tham gia cả hai câu lạc bộ trên.
+        </div>
+        Hỏi lớp 6A có bao nhiêu bạn học sinh <b>không đăng ký tham gia</b> câu lạc bộ nào trong hai câu lạc bộ trên?
+        <div class="dots"></div>
+        <div class="dots"></div>
+        <div class="dots"></div>
+        <div class="dots"></div>
+    </div>
+
+</body>
+</html>
