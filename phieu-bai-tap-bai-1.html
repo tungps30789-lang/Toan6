@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
     <style>
         * {
@@ -21,14 +24,14 @@
             font-family: 'Nunito', serif;
             background: #E2E8F0;
             color: #000;
-            padding: 70px 10px 40px 10px; /* Chừa khoảng trống cho Toolbar phía trên */
+            padding: 70px 10px 40px 10px;
             display: flex;
             justify-content: center;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        /* Thanh công cụ Bút vẽ iPad (Sticky Toolbar) */
+        /* Thanh công cụ Bút iPad (Sticky Toolbar) */
         .toolbar {
             position: fixed;
             top: 10px;
@@ -42,9 +45,9 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             backdrop-filter: blur(10px);
-            max-width: 95vw;
+            max-width: 96vw;
             overflow-x: auto;
         }
 
@@ -71,6 +74,17 @@
             box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
         }
 
+        .btn-submit {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+            color: white !important;
+            border: none !important;
+            padding: 7px 16px !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+        }
+        .btn-submit:hover {
+            transform: scale(1.05);
+        }
+
         .color-dot {
             width: 22px;
             height: 22px;
@@ -89,7 +103,7 @@
             width: 1px;
             height: 24px;
             background: #CBD5E1;
-            margin: 0 4px;
+            margin: 0 2px;
         }
 
         /* Khung giấy làm bài */
@@ -99,7 +113,7 @@
             max-width: 850px;
             background: #FFFFFF;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 35px 40px;
         }
 
@@ -111,7 +125,7 @@
             width: 100%;
             height: 100%;
             z-index: 100;
-            touch-action: none; /* Khóa cuộn 1 ngón để bút vẽ mượt */
+            touch-action: none;
             cursor: crosshair;
         }
 
@@ -197,6 +211,130 @@
             gap: 4px;
             margin-bottom: 10px;
         }
+
+        /* Nút nộp bài to ở cuối trang */
+        .bottom-submit-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #CBD5E1;
+            position: relative;
+            z-index: 200;
+        }
+        .big-submit-btn {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .big-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Popup chúc mừng hoàn thành (Modal) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.75);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+        .modal-card {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 520px;
+            border-radius: 28px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1E1B4B;
+            margin-bottom: 8px;
+        }
+        .modal-desc {
+            font-size: 14.5px;
+            color: #64748B;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .score-picker {
+            background: #F8FAFC;
+            border: 2px solid #E2E8F0;
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .score-stars {
+            font-size: 28px;
+            color: #F59E0B;
+            letter-spacing: 4px;
+            margin: 6px 0;
+            cursor: pointer;
+        }
+
+        .modal-btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .btn-modal {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-modal-primary {
+            background: #4F46E5;
+            color: white;
+        }
+        .btn-modal-secondary {
+            background: #F1F5F9;
+            color: #475569;
+        }
     </style>
 </head>
 <body>
@@ -218,8 +356,12 @@
         <div class="divider"></div>
 
         <button class="tool-btn" onclick="undo()" title="Hoàn tác nét vẽ">↩️ Lùi lại</button>
-        <button class="tool-btn" onclick="clearCanvas()" style="color: #DC2626;" title="Xóa toàn bộ bài làm">🗑️ Xóa hết</button>
-        <button class="tool-btn" onclick="window.print()" style="background: #10B981; color: white;">🖨️ In bài</button>
+        <button class="tool-btn" onclick="clearCanvas()" style="color: #DC2626;" title="Xóa toàn bộ bài làm">🗑️ Xóa</button>
+        
+        <div class="divider"></div>
+
+        <!-- NÚT NỘP BÀI TRÊN TOOLBAR -->
+        <button class="tool-btn btn-submit" onclick="submitHomework()">🚀 Nộp Bài</button>
     </div>
 
     <!-- KHUNG TỜ GIẤY BÀI TẬP -->
@@ -254,8 +396,8 @@
                     <td style="width: 70%; font-weight: bold;">LỜI PHÊ CỦA BỐ / THẦY CÔ</td>
                 </tr>
                 <tr>
-                    <td style="height: 50px; font-size: 18pt; font-weight: bold;"></td>
-                    <td></td>
+                    <td style="height: 50px; font-size: 18pt; font-weight: bold;" id="teacher-score"></td>
+                    <td id="teacher-comment"></td>
                 </tr>
             </table>
 
@@ -354,6 +496,36 @@
                 <div class="dots"></div>
             </div>
 
+            <!-- NÚT NỘP BÀI CUỐI TRANG -->
+            <div class="bottom-submit-container">
+                <button class="big-submit-btn" onclick="submitHomework()">
+                    🎉 HOÀN THÀNH & NỘP BÀI CHO BỐ 🎉
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- POPUP CHÚC MỪNG HOÀN THÀNH -->
+    <div class="modal-overlay" id="submit-modal">
+        <div class="modal-card">
+            <div class="modal-icon">🏆 🌟 🎊</div>
+            <h2 class="modal-title">HOÀN THÀNH XUẤT SẮC!</h2>
+            <p class="modal-desc">
+                Chúc mừng <b>Phạm Phương Thảo</b> đã hoàn thành bài tập Bài 1!<br>
+                Bài làm của con đã được lưu trữ an toàn.
+            </p>
+
+            <div class="score-picker">
+                <div style="font-size: 13px; font-weight: 800; color: #475569;">BỐ CHẤM ĐIỂM CHO CON:</div>
+                <div class="score-stars" onclick="giveScore(10)">⭐⭐⭐⭐⭐</div>
+                <div style="font-size: 14px; font-weight: 900; color: #10B981;" id="score-text">10 / 10 ĐIỂM TUYỆT ĐỐI! 💯</div>
+            </div>
+
+            <div class="modal-btn-group">
+                <button class="btn-modal btn-modal-secondary" onclick="closeModal()">✏️ Xem lại bài</button>
+                <a href="index.html" class="btn-modal btn-modal-primary">🏠 Về Trang Chủ</a>
+            </div>
         </div>
     </div>
 
@@ -367,16 +539,12 @@
         let currentColor = '#2563EB';
         let isDrawing = false;
         let lastX = 0, lastY = 0;
-        let strokesHistory = []; // Lưu các nét vẽ để Undo
+        let strokesHistory = [];
         let currentStroke = [];
 
-        // Khởi tạo kích thước Canvas chuẩn Retina iPad
         function resizeCanvas() {
             const rect = paper.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
-
-            // Lưu nét vẽ cũ trước khi resize
-            const oldData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
@@ -392,7 +560,6 @@
         window.addEventListener('load', resizeCanvas);
         window.addEventListener('resize', resizeCanvas);
 
-        // Lấy tọa độ chính xác của Apple Pencil / ngón tay
         function getCoords(e) {
             const rect = canvas.getBoundingClientRect();
             return {
@@ -401,7 +568,6 @@
             };
         }
 
-        // Bắt đầu nét vẽ
         function startDrawing(e) {
             isDrawing = true;
             const pos = getCoords(e);
@@ -414,10 +580,9 @@
             }];
         }
 
-        // Đang vẽ di chuyển
         function draw(e) {
             if (!isDrawing) return;
-            e.preventDefault(); // Ngăn cuộn trang khi đang viết bút
+            e.preventDefault();
             const pos = getCoords(e);
 
             ctx.beginPath();
@@ -446,7 +611,6 @@
             }
         }
 
-        // Kết thúc nét vẽ
         function stopDrawing() {
             if (isDrawing) {
                 isDrawing = false;
@@ -457,14 +621,12 @@
             }
         }
 
-        // Sự kiện Pointer (Tương thích Apple Pencil & Touch 100%)
         canvas.addEventListener('pointerdown', startDrawing);
         canvas.addEventListener('pointermove', draw);
         canvas.addEventListener('pointerup', stopDrawing);
         canvas.addEventListener('pointercancel', stopDrawing);
         canvas.addEventListener('pointerleave', stopDrawing);
 
-        // Đổi công cụ
         function setTool(tool) {
             currentTool = tool;
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
@@ -473,7 +635,6 @@
             if (tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
         }
 
-        // Đổi màu mực
         function setColor(color, elem) {
             currentColor = color;
             setTool('pen');
@@ -481,7 +642,6 @@
             if (elem) elem.classList.add('active');
         }
 
-        // Vẽ lại tất cả các nét
         function redrawAll() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             strokesHistory.forEach(stroke => {
@@ -509,7 +669,6 @@
             });
         }
 
-        // Hoàn tác (Undo)
         function undo() {
             if (strokesHistory.length > 0) {
                 strokesHistory.pop();
@@ -518,7 +677,6 @@
             }
         }
 
-        // Xóa sạch bài làm
         function clearCanvas() {
             if (confirm('Phương Thảo có chắc muốn xóa hết nét bút để làm lại từ đầu không?')) {
                 strokesHistory = [];
@@ -527,14 +685,12 @@
             }
         }
 
-        // Lưu nét vẽ vào bộ nhớ trình duyệt để không bị mất khi lỡ tay F5
         function saveToLocalStorage() {
             try {
                 localStorage.setItem('toan6_bai1_strokes', JSON.stringify(strokesHistory));
             } catch (e) {}
         }
 
-        // Khôi phục nét vẽ cũ nếu có
         try {
             const saved = localStorage.getItem('toan6_bai1_strokes');
             if (saved) {
@@ -542,6 +698,44 @@
                 setTimeout(redrawAll, 200);
             }
         } catch (e) {}
+
+        // HIỆU ỨNG PHÁO HOA & NỘP BÀI
+        function submitHomework() {
+            document.getElementById('submit-modal').style.display = 'flex';
+            
+            // Bắn pháo hoa Confetti chúc mừng
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 80,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 }
+                    });
+                    confetti({
+                        particleCount: 80,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 }
+                    });
+                }, 300);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('submit-modal').style.display = 'none';
+        }
+
+        function giveScore(score) {
+            document.getElementById('teacher-score').innerText = score;
+            document.getElementById('teacher-comment').innerText = 'Con làm bài rất xuất sắc!';
+            alert('Bố đã chấm điểm ' + score + ' cho Phương Thảo!');
+        }
     </script>
 </body>
 </html>
