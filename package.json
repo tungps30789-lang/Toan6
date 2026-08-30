@@ -78,7 +78,8 @@
 		"test": "node scripts/test.js",
 		"react:build": "npm run --prefix react build",
 		"react:demo": "npm run --prefix react demo",
-		"react:test": "npm run --prefix react test"
+		"react:test": "npm run --prefix react test",
+		"slidev:build": "slidev build slides-bai-2.md --base /Toan6/slidev-bai-2/ --out slidev-bai-2"
 	},
 	"author": {
 		"name": "Hakim El Hattab",
