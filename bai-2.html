@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Toán 6 - Bài 2: Số tự nhiên, Hệ thập phân & Số La Mã</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css" id="theme">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #EEF2FF;
+            --accent-pink: #EC4899;
+            --accent-yellow: #F59E0B;
+            --accent-green: #10B981;
+            --accent-blue: #0EA5E9;
+            --text-dark: #1E293B;
+            --card-bg: #FFFFFF;
+            --card-border: #E2E8F0;
+        }
+
+        body, .reveal {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-dark);
+            background: #F8FAFC;
+            font-size: 25px; /* Chuẩn iPad */
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            color: #1E1B4B;
+            margin: 0 0 8px 0;
+            line-height: 1.25;
+        }
+
+        .reveal h1 { font-size: 1.75em; }
+        .reveal h2 { font-size: 1.3em; }
+        .reveal h3 { font-size: 1.05em; }
+        .reveal h4 { font-size: 0.88em; }
+
+        .home-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #CBD5E1;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #4338CA;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(5px);
+        }
+        .home-btn:hover {
+            background: #EEF2FF;
+            border-color: #6366F1;
+        }
+
+        .slide-content {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 14px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 2px solid var(--card-border);
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        .card-primary { background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-color: #C7D2FE; }
+        .card-pink { background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%); border-color: #FBCFE8; }
+        .card-yellow { background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%); border-color: #FDE68A; }
+        .card-green { background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border-color: #A7F3D0; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 0.65em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .badge-purple { background: #E0E7FF; color: #4338CA; }
+        .badge-pink { background: #FCE7F3; color: #BE185D; }
+        .badge-green { background: #D1FAE5; color: #047857; }
+        .badge-yellow { background: #FEF3C7; color: #B45309; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: stretch; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: stretch; }
+
+        .highlight-box {
+            background: #FEF08A;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 800;
+            color: #854D0E;
+        }
+
+        .roman-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+            border: 2px solid #D97706;
+            border-radius: 10px;
+            padding: 6px 12px;
+            margin: 3px;
+            min-width: 55px;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.15);
+        }
+        .roman-num { font-size: 1.1em; font-weight: 900; color: #B45309; }
+        .roman-val { font-size: 0.7em; font-weight: 700; color: #64748B; }
+
+        /* Tia số minh họa */
+        .number-ray {
+            position: relative;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 0 20px;
+            border: 2px solid #E2E8F0;
+        }
+        .ray-line {
+            position: absolute;
+            left: 30px;
+            right: 30px;
+            height: 4px;
+            background: #4F46E5;
+            border-radius: 2px;
+        }
+        .ray-arrow {
+            position: absolute;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 14px solid #4F46E5;
+        }
+        .ray-ticks {
+            position: absolute;
+            left: 40px;
+            right: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ray-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .ray-tick { width: 3px; height: 14px; background: #4F46E5; }
+        .ray-num { font-size: 0.7em; font-weight: 800; color: #312E81; margin-top: 4px; }
+
+        .rule-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-left: 5px solid #4F46E5;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .rule-num {
+            background: #4F46E5;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.78em;
+            flex-shrink: 0;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+        }
+        .slide-title { font-size: 0.95em !important; margin: 0 !important; color: #1E1B4B; font-weight: 800; }
+        .slide-sub { font-size: 0.58em; color: #64748B; font-weight: 800; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-btn">🏠 Mục Lục Bài Học</a>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: BÌA BÀI GIẢNG -->
+            <section data-background="linear-gradient(135deg, #0EA5E9 0%, #6366F1 50%, #8B5CF6 100%)">
+                <div class="slide-content" style="color: white; text-align: center; padding: 10px;">
+                    <span class="badge" style="background: rgba(255,255,255,0.25); color: white; font-size: 0.7em;">
+                        ✨ CHƯƠNG TRÌNH TOÁN 6 - BÀI 2
+                    </span>
+                    <h1 style="color: white; font-size: 1.75em; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                        SỐ TỰ NHIÊN, HỆ THẬP PHÂN & SỐ LA MÃ
+                    </h1>
+                    <p style="font-size: 0.92em; color: #FDF2F8; font-weight: 600; margin-bottom: 20px;">
+                        🖐️ <i>Bí mật 10 ngón tay của loài người & Mật mã đấu sĩ cổ đại</i> 🏛️
+                    </p>
+
+                    <div style="display: inline-flex; gap: 20px; background: rgba(255,255,255,0.18); padding: 10px 24px; border-radius: 40px; backdrop-filter: blur(8px);">
+                        <span style="font-size: 0.75em; font-weight: 700;">👧 Học sinh: <b>Phương Thảo</b></span>
+                        <span style="font-size: 0.75em; font-weight: 700;">⏱️ Thời lượng: <b>2 Tiết (90 phút)</b></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 2: MỤC TIÊU BÀI HỌC -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">🎯 3 Trạm Khám Phá Của Bài Học</h3>
+                        <span class="slide-sub">TOÁN 6 - BÀI 2</span>
+                    </div>
+                    
+                    <div class="grid-3" style="margin-top: 10px;">
+                        <div class="card card-primary fragment fade-up">
+                            <div style="font-size: 1.5em; margin-bottom: 4px;">📏</div>
+                            <h4 style="color: #3730A3;">Trạm 1: Tia Số</h4>
+                            <p style="font-size: 0.72em; color: #4B5563; line-height: 1.4;">Biểu diễn số trên tia số, so sánh số và tìm <b>số liền trước, liền sau</b>.</p>
+                        </div>
+
+                        <div class="card card-pink fragment fade-up">
+                            <div style="font-size: 1.5em; margin-bottom: 4px;">🔟</div>
+                            <h4 style="color: #9D174D;">Trạm 2: Hệ Thập Phân</h4>
+                            <p style="font-size: 0.72em; color: #4B5563; line-height: 1.4;">Bí mật 10 chữ số, giá trị vị trí ghế ngồi & cấu tạo số $\overline{ab}, \overline{abc}$.</p>
+                        </div>
+
+                        <div class="card card-yellow fragment fade-up">
+                            <div style="font-size: 1.5em; margin-bottom: 4px;">🏛️</div>
+                            <h4 style="color: #92400E;">Trạm 3: Mật Mã La Mã</h4>
+                            <p style="font-size: 0.72em; color: #4B5563; line-height: 1.4;">Thuộc lòng quy tắc $\text{I}, \text{V}, \text{X}$, xem đồng hồ cổ & số thế kỷ.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: TIA SỐ & SO SÁNH SỐ TỰ NHIÊN -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">📏 1. Tia Số & So Sánh Số Tự Nhiên</h3>
+                        <span class="slide-sub">TRẠM 1: TIA SỐ</span>
+                    </div>
+
+                    <div class="card card-primary" style="padding: 10px 16px;">
+                        <p style="font-size: 0.78em;">
+                            <b>Tia số:</b> Bắt đầu từ gốc <b>0</b>, các số cách đều nhau và mũi tên kéo dài mãi sang bên phải $\rightarrow$.
+                        </p>
+                    </div>
+
+                    <!-- Vẽ tia số -->
+                    <div class="number-ray">
+                        <div class="ray-line"></div>
+                        <div class="ray-arrow"></div>
+                        <div class="ray-ticks">
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">0</span></div>
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">1</span></div>
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">2</span></div>
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">3</span></div>
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">4</span></div>
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">5</span></div>
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">6</span></div>
+                            <div class="ray-point"><div class="ray-tick"></div><span class="ray-num">...</span></div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2 fragment" style="margin-top: 8px;">
+                        <div class="card card-green" style="padding: 10px 14px;">
+                            <h4 style="color: #065F46; font-size: 0.78em; margin-bottom: 2px;">👈 Nằm bên trái = NHỎ HƠN:</h4>
+                            <p style="font-size: 0.7em;">Số $2$ nằm bên trái số $5 \implies 2 < 5$.</p>
+                        </div>
+
+                        <div class="card card-pink" style="padding: 10px 14px;">
+                            <h4 style="color: #9D174D; font-size: 0.78em; margin-bottom: 2px;">👉 Nằm bên phải = LỚN HƠN:</h4>
+                            <p style="font-size: 0.7em;">Số $6$ nằm bên phải số $3 \implies 6 > 3$.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: SỐ LIỀN TRƯỚC VÀ SỐ LIỀN SAU -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">Số Liền Trước & Số Liền Sau</h3>
+                        <span class="slide-sub">QUY TẮC +1 VÀ -1</span>
+                    </div>
+
+                    <div class="grid-3" style="margin-top: 15px; text-align: center;">
+                        <div class="card card-pink fragment">
+                            <span class="badge badge-pink">BÊN TRÁI (-1)</span>
+                            <div style="font-size: 1.4em; font-weight: 900; color: #BE185D;">99</div>
+                            <h4 style="color: #9D174D; font-size: 0.78em; margin-top: 4px;">Số Liền Trước</h4>
+                            <p style="font-size: 0.68em; color: #64748B;">Nhỏ hơn 1 đơn vị ($100 - 1$)</p>
+                        </div>
+
+                        <div class="card card-primary fragment">
+                            <span class="badge badge-purple">SỐ ĐANG XÉT</span>
+                            <div style="font-size: 1.8em; font-weight: 900; color: #4338CA;">100</div>
+                            <h4 style="color: #3730A3; font-size: 0.78em; margin-top: 4px;">Số Trung Tâm</h4>
+                            <p style="font-size: 0.68em; color: #64748B;">(Mốc tham chiếu)</p>
+                        </div>
+
+                        <div class="card card-green fragment">
+                            <span class="badge badge-green">BÊN PHẢI (+1)</span>
+                            <div style="font-size: 1.4em; font-weight: 900; color: #047857;">101</div>
+                            <h4 style="color: #065F46; font-size: 0.78em; margin-top: 4px;">Số Liền Sau</h4>
+                            <p style="font-size: 0.68em; color: #64748B;">Lớn hơn 1 đơn vị ($100 + 1$)</p>
+                        </div>
+                    </div>
+
+                    <div class="card card-yellow fragment" style="margin-top: 10px; padding: 10px 16px;">
+                        <p style="font-size: 0.72em;">
+                            ⚠️ <b>Bẫy đặc biệt:</b> Số $0$ là số tự nhiên nhỏ nhất nên <b>số 0 KHÔNG CÓ số liền trước</b> trong tập hợp số tự nhiên $\mathbb{N}$!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: BÍ MẬT 10 NGÓN TAY HỆ THẬP PHÂN -->
+            <section data-background="#EEF2FF">
+                <div class="slide-content">
+                    <span class="badge badge-purple">TRẠM 2: HỆ THẬP PHÂN (THE DECIMAL SYSTEM)</span>
+                    <h2 style="color: #312E81; margin-top: 5px;">Bí Mật 10 Ngón Tay Của Loài Người 🖐️🖐️</h2>
+
+                    <div class="card card-yellow fragment" style="margin-top: 10px;">
+                        <p style="font-size: 0.78em; line-height: 1.5;">
+                            🤔 <b>Tại sao cả thế giới dùng 10 chữ số:</b> $\{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$? <br>
+                            👉 <i>Vì tổ tiên loài người đếm bằng <b>10 ngón tay</b>! Cứ đếm đủ 10 đơn vị thì gộp thành <b>1 chục</b>.</i>
+                        </p>
+                    </div>
+
+                    <div class="grid-2 fragment" style="margin-top: 8px;">
+                        <div class="card card-primary" style="padding: 10px 14px;">
+                            <h4 style="color: #3730A3; font-size: 0.78em;">10 Đơn vị = 1 Chục (10)</h4>
+                            <p style="font-size: 0.7em;">10 que tính gộp thành 1 bó chục.</p>
+                        </div>
+                        <div class="card card-green" style="padding: 10px 14px;">
+                            <h4 style="color: #065F46; font-size: 0.78em;">10 Chục = 1 Trăm (100)</h4>
+                            <p style="font-size: 0.7em;">10 bó chục gộp thành 1 tấm trăm.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: QUYỀN LỰC VỊ TRÍ GHẾ NGỒI -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">2. "Vị Trí Ghế Ngồi" Quyết Định Quyền Lực</h3>
+                        <span class="slide-sub">GIÁ TRỊ THEO HÀNG</span>
+                    </div>
+
+                    <div class="card card-pink" style="padding: 10px 16px;">
+                        <p style="font-size: 0.75em;">
+                            Xem xét số <b>$333$</b>: Cả 3 chữ số đều là số $3$, nhưng giá trị hoàn toàn khác nhau!
+                        </p>
+                    </div>
+
+                    <div class="grid-3 fragment" style="margin-top: 8px; text-align: center;">
+                        <div class="card card-primary">
+                            <span class="badge badge-purple">HÀNG TRĂM</span>
+                            <div style="font-size: 1.5em; font-weight: 900; color: #4338CA;">300</div>
+                            <p style="font-size: 0.7em; color: #3730A3; font-weight: 700;">$3 \times 100$</p>
+                        </div>
+
+                        <div class="card card-yellow">
+                            <span class="badge badge-yellow">HÀNG CHỤC</span>
+                            <div style="font-size: 1.5em; font-weight: 900; color: #B45309;">30</div>
+                            <p style="font-size: 0.7em; color: #92400E; font-weight: 700;">$3 \times 10$</p>
+                        </div>
+
+                        <div class="card card-green">
+                            <span class="badge badge-green">HÀNG ĐƠN VỊ</span>
+                            <div style="font-size: 1.5em; font-weight: 900; color: #047857;">3</div>
+                            <p style="font-size: 0.7em; color: #065F46; font-weight: 700;">$3 \times 1$</p>
+                        </div>
+                    </div>
+
+                    <div class="card card-primary fragment" style="margin-top: 8px; text-align: center; padding: 8px 14px;">
+                        <p style="font-size: 0.85em; font-weight: 800; color: #3730A3;">
+                            $$333 = 300 + 30 + 3 = 3 \times 100 + 3 \times 10 + 3$$
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: CÔNG THỨC CẤU TẠO SỐ -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">3. Công Thức Cấu Tạo Số $\overline{ab}$ & $\overline{abc}$</h3>
+                        <span class="slide-sub">BÍ KÍP TỔNG QUÁT</span>
+                    </div>
+
+                    <div class="rule-card fragment">
+                        <div class="rule-num">2</div>
+                        <div>
+                            <b style="color: #4F46E5; font-size: 0.82em;">Số có hai chữ số: $\overline{ab}$ $(a \ne 0)$</b>
+                            <p style="font-size: 0.75em; margin-top: 2px; color: #1E1B4B; font-weight: 800;">
+                                $$\overline{ab} = a \times 10 + b$$
+                            </p>
+                            <span style="font-size: 0.68em; color: #64748B;">Ví dụ: $47 = 4 \times 10 + 7 = 40 + 7$</span>
+                        </div>
+                    </div>
+
+                    <div class="rule-card fragment">
+                        <div class="rule-num">3</div>
+                        <div>
+                            <b style="color: #4F46E5; font-size: 0.82em;">Số có ba chữ số: $\overline{abc}$ $(a \ne 0)$</b>
+                            <p style="font-size: 0.75em; margin-top: 2px; color: #1E1B4B; font-weight: 800;">
+                                $$\overline{abc} = a \times 100 + b \times 10 + c$$
+                            </p>
+                            <span style="font-size: 0.68em; color: #64748B;">Ví dụ: $258 = 2 \times 100 + 5 \times 10 + 8 = 200 + 50 + 8$</span>
+                        </div>
+                    </div>
+
+                    <div class="card card-yellow fragment" style="padding: 8px 14px;">
+                        <p style="font-size: 0.7em; color: #92400E;">
+                            💡 <i>Dấu gạch ngang trên đầu $\overline{ab}$ dùng để phân biệt với phép nhân $a \times b$ đó Phương Thảo nhé!</i>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8: THỬ THÁCH CẤU TẠO SỐ -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">🎮 Thử Thách: Nhà Thám Hiểm Chữ Số</h3>
+                        <span class="slide-sub">LUYỆN TẬP TẠI CHỖ</span>
+                    </div>
+
+                    <div class="card card-pink" style="padding: 10px 16px;">
+                        <p style="font-size: 0.75em;">
+                            <b>Câu hỏi 1:</b> Phân tích số <b>$3045$</b> thành tổng giá trị các chữ số của nó?
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 6px;">
+                        <div class="card card-green" style="padding: 8px 14px;">
+                            <p style="font-size: 0.75em; font-weight: 800; color: #047857;">
+                                ✅ Lời giải: $3045 = 3000 + 40 + 5 = 3 \times 1000 + 4 \times 10 + 5$
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card card-primary fragment" style="margin-top: 8px; padding: 10px 16px;">
+                        <p style="font-size: 0.75em;">
+                            <b>Câu hỏi 2:</b> Số tự nhiên lớn nhất có 4 chữ số khác nhau là số nào?
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 6px;">
+                        <div class="card card-yellow" style="padding: 8px 14px;">
+                            <p style="font-size: 0.75em; font-weight: 800; color: #92400E;">
+                                ✅ Lời giải: Chọn từ lớn đến bé $\implies$ <b>$9876$</b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 9: GIẢI LAO -->
+            <section data-background="linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%)">
+                <div class="slide-content" style="text-align: center; color: #78350F; padding: 15px;">
+                    <div style="font-size: 2.8em;">☕ 🧘‍♀️ 🍎</div>
+                    <h2 style="color: #78350F; font-size: 1.4em; margin: 8px 0;">GIẢI LAO 5 - 10 PHÚT NHÉ!</h2>
+                    <p style="font-size: 0.8em; font-weight: 700; line-height: 1.5;">
+                        Phương Thảo hãy uống một ngụm nước, vươn vai thư giãn mắt.<br>
+                        Tiết tiếp theo bố con mình cùng đến với: <b>Mật mã đế chế La Mã cổ đại</b>!
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 10: MẬT MÃ LA MÃ KHỞI ĐỘNG -->
+            <section data-background="#FFFBEB">
+                <div class="slide-content">
+                    <span class="badge badge-yellow">TRẠM 3: MẬT MÃ CHỮ SỐ LA MÃ 🏛️</span>
+                    <h2 style="color: #92400E; margin-top: 4px;">Những Ký Tự Bí Ẩn Trên Đồng Hồ & Phim Ảnh</h2>
+
+                    <div class="card card-primary fragment" style="margin-top: 10px;">
+                        <p style="font-size: 0.78em; line-height: 1.5;">
+                            🕰️ Phương Thảo có thấy trên các <b>mặt đồng hồ cổ</b>, <b>tập phim Harry Potter</b> hay <b>Thế kỷ XXI</b> có các ký tự như: $\text{I}, \text{V}, \text{X}$ không? <br>
+                            👉 Đó là hệ chữ số của người La Mã từ hơn 2000 năm trước!
+                        </p>
+                    </div>
+
+                    <div class="card card-green fragment" style="margin-top: 10px; text-align: center;">
+                        <p style="font-size: 0.85em; font-weight: 800; color: #065F46;">
+                            Chỉ cần nhớ <span class="highlight-box">3 KÝ TỰ GỐC TỪ BÀN TAY</span> là đọc được mọi số!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 11: 3 KÝ TỰ GỐC TỪ BÀN TAY -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">4. 3 Ký Tự Gốc Từ Bàn Tay 🖐️</h3>
+                        <span class="slide-sub">HÌNH ẢNH TRỰC QUAN</span>
+                    </div>
+
+                    <div class="grid-3" style="margin-top: 10px; text-align: center;">
+                        <div class="card card-primary fragment">
+                            <div style="font-size: 2em; margin-bottom: 2px;">☝️</div>
+                            <div style="font-size: 1.8em; font-weight: 900; color: #4338CA;">I</div>
+                            <h4 style="color: #3730A3; font-size: 0.85em; margin-top: 4px;">Số 1</h4>
+                            <p style="font-size: 0.68em; color: #64748B;">1 Ngón tay trỏ giơ lên</p>
+                        </div>
+
+                        <div class="card card-pink fragment">
+                            <div style="font-size: 2em; margin-bottom: 2px;">✌️</div>
+                            <div style="font-size: 1.8em; font-weight: 900; color: #BE185D;">V</div>
+                            <h4 style="color: #9D174D; font-size: 0.85em; margin-top: 4px;">Số 5</h4>
+                            <p style="font-size: 0.68em; color: #64748B;">Bàn tay xòe tạo chữ V (5 ngón)</p>
+                        </div>
+
+                        <div class="card card-yellow fragment">
+                            <div style="font-size: 2em; margin-bottom: 2px;">🙌</div>
+                            <div style="font-size: 1.8em; font-weight: 900; color: #B45309;">X</div>
+                            <h4 style="color: #92400E; font-size: 0.85em; margin-top: 4px;">Số 10</h4>
+                            <p style="font-size: 0.68em; color: #64748B;">2 Bàn tay bắt chéo ($5+5=10$)</p>
+                        </div>
+                    </div>
+
+                    <div class="card card-green fragment" style="margin-top: 10px; padding: 8px 14px;">
+                        <p style="font-size: 0.72em; color: #065F46;">
+                            🌐 <i>Mở rộng thêm: $\text{L} = 50$, $\text{C} = 100$, $\text{D} = 500$, $\text{M} = 1000$.</i>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 12: QUY TẮC TIẾN CỘNG LÙI TRỪ -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">5. Quy Tắc Vàng: "Phải Cộng (+) - Trái Trừ (-)"</h3>
+                        <span class="slide-sub">BÍ QUYẾT GHÉP SỐ</span>
+                    </div>
+
+                    <div class="grid-2" style="margin-top: 8px;">
+                        <div class="card card-green fragment">
+                            <span class="badge badge-green">👉 BÊN PHẢI = CỘNG (+)</span>
+                            <p style="font-size: 0.72em; line-height: 1.6; margin-top: 6px;">
+                                • $\text{VI} = 5 + 1 =$ <b>6</b> <br>
+                                • $\text{VII} = 5 + 2 =$ <b>7</b> <br>
+                                • $\text{VIII} = 5 + 3 =$ <b>8</b> <br>
+                                • $\text{XI} = 10 + 1 =$ <b>11</b>
+                            </p>
+                        </div>
+
+                        <div class="card card-pink fragment">
+                            <span class="badge badge-pink">👈 BÊN TRÁI = TRỪ (-)</span>
+                            <p style="font-size: 0.72em; line-height: 1.6; margin-top: 6px;">
+                                • $\text{IV} = 5 - 1 =$ <b>4</b> <br>
+                                • $\text{IX} = 10 - 1 =$ <b>9</b> <br>
+                                • $\text{XL} = 50 - 10 =$ <b>40</b> <br>
+                                • $\text{XC} = 100 - 10 =$ <b>90</b>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card card-yellow fragment" style="margin-top: 8px; padding: 8px 14px;">
+                        <p style="font-size: 0.7em; color: #92400E; font-weight: 700;">
+                            ⚠️ <b>Quy tắc bất di bất dịch:</b> Không bao giờ viết lặp lại quá 3 lần cùng 1 ký tự ($\text{III} = 3$, nhưng số $4$ phải viết là $\text{IV}$, không viết $\text{IIII}$).
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 13: BẢNG SỐ LA MÃ TỪ 1 ĐẾN 30 -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">Bảng Tra Cứu Số La Mã Từ 1 Đến 30</h3>
+                        <span class="slide-sub">TOÁN 6 TRỌNG TÂM</span>
+                    </div>
+
+                    <!-- Hàng 1 - 10 -->
+                    <div style="margin-bottom: 6px;">
+                        <span style="font-size: 0.65em; font-weight: 800; color: #4338CA;">TỪ 1 ĐẾN 10:</span><br>
+                        <div class="roman-badge"><span class="roman-num">I</span><span class="roman-val">1</span></div>
+                        <div class="roman-badge"><span class="roman-num">II</span><span class="roman-val">2</span></div>
+                        <div class="roman-badge"><span class="roman-num">III</span><span class="roman-val">3</span></div>
+                        <div class="roman-badge" style="border-color:#BE185D;"><span class="roman-num" style="color:#BE185D;">IV</span><span class="roman-val">4</span></div>
+                        <div class="roman-badge"><span class="roman-num">V</span><span class="roman-val">5</span></div>
+                        <div class="roman-badge"><span class="roman-num">VI</span><span class="roman-val">6</span></div>
+                        <div class="roman-badge"><span class="roman-num">VII</span><span class="roman-val">7</span></div>
+                        <div class="roman-badge"><span class="roman-num">VIII</span><span class="roman-val">8</span></div>
+                        <div class="roman-badge" style="border-color:#BE185D;"><span class="roman-num" style="color:#BE185D;">IX</span><span class="roman-val">9</span></div>
+                        <div class="roman-badge"><span class="roman-num">X</span><span class="roman-val">10</span></div>
+                    </div>
+
+                    <!-- Hàng 11 - 20 & 21 - 30 -->
+                    <div class="grid-2 fragment" style="margin-top: 6px;">
+                        <div class="card card-primary" style="padding: 8px 12px;">
+                            <span class="badge badge-purple">TỪ 11 ĐẾN 20 (Thêm X vào trước)</span>
+                            <p style="font-size: 0.68em; line-height: 1.4; margin-top: 4px;">
+                                $\text{XI}(11), \text{XII}(12), \text{XIII}(13), \text{XIV}(14), \text{XV}(15), \text{XVI}(16), \text{XVII}(17), \text{XVIII}(18), \text{XIX}(19), \text{XX}(20)$
+                            </p>
+                        </div>
+
+                        <div class="card card-green" style="padding: 8px 12px;">
+                            <span class="badge badge-green">TỪ 21 ĐẾN 30 (Thêm XX vào trước)</span>
+                            <p style="font-size: 0.68em; line-height: 1.4; margin-top: 4px;">
+                                $\text{XXI}(21), \text{XXII}(22), \text{XXIII}(23), \text{XXIV}(24), \text{XXV}(25), \dots, \text{XXIX}(29), \text{XXX}(30)$
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 14: ỨNG DỤNG THỰC TẾ -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">🏛️ Ứng Dụng Thực Tế: Đồng Hồ & Thế Kỷ</h3>
+                        <span class="slide-sub">ĐỜI SỐNG HÀNG NGÀY</span>
+                    </div>
+
+                    <div class="grid-2" style="margin-top: 10px;">
+                        <div class="card card-yellow fragment">
+                            <h4 style="color: #92400E; font-size: 0.82em;">🕰️ Xem giờ trên mặt đồng hồ:</h4>
+                            <p style="font-size: 0.72em; line-height: 1.5; margin-top: 6px;">
+                                • Kim ngắn chỉ $\text{IX}$, kim dài chỉ $\text{XII} \implies$ <b>9 giờ đúng</b>.<br>
+                                • Kim ngắn chỉ $\text{IV}$, kim dài chỉ $\text{VI} \implies$ <b>4 giờ 30 phút</b>.
+                            </p>
+                        </div>
+
+                        <div class="card card-pink fragment">
+                            <h4 style="color: #9D174D; font-size: 0.82em;">🌍 Xác định Thế Kỷ:</h4>
+                            <p style="font-size: 0.72em; line-height: 1.5; margin-top: 6px;">
+                                • Năm 2026 thuộc <b>Thế kỷ $\text{XXI}$</b> ($21$).<br>
+                                • Bác Hồ sinh năm 1890 thuộc <b>Thế kỷ $\text{XIX}$</b> ($19$).<br>
+                                • Thế vận hội Olympic mùa hè lần thứ $\text{XXXIII}$ ($33$).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 15: MINI GAME GIẢI MÃ MẬT THƯ -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">🎮 Thám Hiểm Game: Mở Khóa Rương Báu</h3>
+                        <span class="slide-sub">GIẢI MÃ MẬT THƯ</span>
+                    </div>
+
+                    <div class="card card-primary" style="padding: 10px 16px;">
+                        <p style="font-size: 0.75em; line-height: 1.5;">
+                            🗝️ Để mở rương kho báu, Phương Thảo hãy đổi 3 mật mã sau sang số tự nhiên: <br>
+                            1. <b>$\text{XIV}$</b> = ? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            2. <b>$\text{XXVI}$</b> = ? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            3. <b>$\text{XXIX}$</b> = ?
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 8px;">
+                        <div class="card card-green" style="padding: 10px 16px;">
+                            <h4 style="color: #065F46; font-size: 0.78em; margin-bottom: 2px;">✅ Lời giải mở rương:</h4>
+                            <p style="font-size: 0.72em; line-height: 1.5;">
+                                1. $\text{XIV} = 10 + (5 - 1) =$ <b>14</b> <br>
+                                2. $\text{XXVI} = 20 + 5 + 1 =$ <b>26</b> <br>
+                                3. $\text{XXIX} = 20 + (10 - 1) =$ <b>29</b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 16: TỔNG KẾT BÀI HỌC -->
+            <section data-background="linear-gradient(135deg, #0EA5E9 0%, #4F46E5 100%)">
+                <div class="slide-content" style="color: white; text-align: center; padding: 10px;">
+                    <span class="badge" style="background: #FDE68A; color: #92400E;">✨ TỔNG KẾT BÀI HỌC</span>
+                    <h2 style="color: white; font-size: 1.35em; margin: 6px 0;">3 ĐIỀU CỐT LÕI BỎ TÚI</h2>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 600px; margin: 12px auto 0 auto; text-align: left;">
+                        <div style="background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 10px; backdrop-filter: blur(5px);">
+                            <b style="color: #FDE047; font-size: 0.8em;">1. TIA SỐ:</b> 
+                            <span style="font-size: 0.72em;">Trái nhỏ hơn, Phải lớn hơn. Số liền trước ($-1$), liền sau ($+1$).</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 10px; backdrop-filter: blur(5px);">
+                            <b style="color: #FDE047; font-size: 0.8em;">2. CẤU TẠO SỐ:</b> 
+                            <span style="font-size: 0.72em;">$\overline{ab} = 10a + b$ &nbsp;|&nbsp; $\overline{abc} = 100a + 10b + c$.</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 10px; backdrop-filter: blur(5px);">
+                            <b style="color: #FDE047; font-size: 0.8em;">3. SỐ LA MÃ:</b> 
+                            <span style="font-size: 0.72em;">$\text{I}(1), \text{V}(5), \text{X}(10)$. Bên Phải Cộng (+), Bên Trái Trừ (-).</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 17: PHIẾU THỬ THÁCH ĐIỂM 10 -->
+            <section>
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h3 class="slide-title">🏆 Phiếu Thử Thách Nhận Điểm 10</h3>
+                        <span class="slide-sub">BỐ CHẤM ĐIỂM CHO CON</span>
+                    </div>
+
+                    <div class="card card-primary" style="margin-bottom: 6px; padding: 8px 12px;">
+                        <p style="font-size: 0.68em;">
+                            <b>Câu 1:</b> Tìm số liền trước và số liền sau của số <b>$999$</b>?
+                        </p>
+                    </div>
+
+                    <div class="card card-pink" style="margin-bottom: 6px; padding: 8px 12px;">
+                        <p style="font-size: 0.68em;">
+                            <b>Câu 2:</b> Viết các số sau bằng chữ số La Mã: <b>$8$</b>, <b>$19$</b>, <b>$24$</b>.
+                        </p>
+                    </div>
+
+                    <div class="card card-green" style="margin-bottom: 6px; padding: 8px 12px;">
+                        <p style="font-size: 0.68em;">
+                            <b>Câu 3:</b> Điền Đúng (Đ) hoặc Sai (S): <br>
+                            a) Số $0$ không có số liền trước trong $\mathbb{N}$. &nbsp;&nbsp;&nbsp;&nbsp; 
+                            b) $\text{IX} = 11$. &nbsp;&nbsp;&nbsp;&nbsp; 
+                            c) $\text{XXIV} = 24$.
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="text-align: center; margin-top: 8px;">
+                        <span class="badge badge-yellow" style="font-size: 0.78em; padding: 6px 18px;">
+                            🎉 CHÚC MỪNG PHƯƠNG THẢO HOÀN THÀNH XUẤT SẮC BÀI 2! 🎉
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Core & Plugins -->
+    <script src="dist/reveal.js"></script>
+    <script src="dist/plugin/notes.js"></script>
+    <script src="dist/plugin/markdown.js"></script>
+    <script src="dist/plugin/highlight.js"></script>
+    <script src="dist/plugin/math.js"></script>
+    
+    <script>
+        Reveal.initialize({
+            width: 1024,
+            height: 700,
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0,
+            hash: true,
+            slideNumber: 'c/t',
+            transition: 'slide',
+            transitionSpeed: 'default',
+            controls: true,
+            progress: true,
+            center: true,
+            touch: true,
+
+            mathjax3: {
+                mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+                },
+                options: {
+                    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                }
+            },
+
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax3 ]
+        });
+    </script>
+</body>
+</html>
