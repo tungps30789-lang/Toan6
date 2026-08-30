@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Toán 6 - Bài 1: Tập hợp và Phần tử của tập hợp</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css" id="theme">
+    
+    <!-- Google Fonts for cute & readable Vietnamese text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #EEF2FF;
+            --accent-pink: #EC4899;
+            --accent-yellow: #F59E0B;
+            --accent-green: #10B981;
+            --accent-blue: #0EA5E9;
+            --text-dark: #1E293B;
+            --card-bg: #FFFFFF;
+            --card-border: #E2E8F0;
+        }
+
+        body, .reveal {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-dark);
+            background: #F8FAFC;
+        }
+
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            color: #1E1B4B;
+        }
+
+        .handwritten {
+            font-family: 'Patrick Hand', cursive;
+        }
+
+        /* Slide Cards & Boxes */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border: 2px solid var(--card-border);
+            margin: 15px auto;
+            text-align: left;
+        }
+
+        .card-primary {
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+            border-color: #C7D2FE;
+        }
+
+        .card-pink {
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+            border-color: #FBCFE8;
+        }
+
+        .card-yellow {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border-color: #FDE68A;
+        }
+
+        .card-green {
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            border-color: #A7F3D0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.6em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .badge-purple { background: #E0E7FF; color: #4338CA; }
+        .badge-pink { background: #FCE7F3; color: #BE185D; }
+        .badge-green { background: #D1FAE5; color: #047857; }
+        .badge-yellow { background: #FEF3C7; color: #B45309; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .highlight-box {
+            background: #FEF08A;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            color: #854D0E;
+        }
+
+        .math-symbol {
+            font-size: 1.3em;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .venn-circle {
+            width: 320px;
+            height: 240px;
+            border-radius: 50%;
+            border: 4px dashed #6366F1;
+            background: rgba(99, 102, 241, 0.08);
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .venn-title {
+            position: absolute;
+            top: -16px;
+            left: 20px;
+            background: #6366F1;
+            color: white;
+            padding: 2px 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.8em;
+        }
+
+        .venn-item {
+            font-size: 0.8em;
+            margin: 6px 0;
+            font-weight: 700;
+            color: #312E81;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #E2E8F0;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            font-size: 0.85em;
+        }
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .tag-pill {
+            display: inline-block;
+            background: #F1F5F9;
+            border: 1px solid #CBD5E1;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin: 4px;
+            font-size: 0.85em;
+        }
+
+        .rule-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 16px;
+            border-left: 6px solid #4F46E5;
+            margin-bottom: 12px;
+        }
+        .rule-num {
+            background: #4F46E5;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        /* Slide header */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        .slide-title {
+            font-size: 1.1em !important;
+            margin: 0 !important;
+            color: #1E1B4B;
+        }
+        .slide-sub {
+            font-size: 0.5em;
+            color: #64748B;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: COVER -->
+            <section data-background="linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%)">
+                <div style="color: white; text-align: center; padding: 20px;">
+                    <span class="badge" style="background: rgba(255,255,255,0.25); color: white; font-size: 0.7em;">
+                        ✨ CHƯƠNG TRÌNH TOÁN 6 - HỌC KỲ 1
+                    </span>
+                    <h1 style="color: white; font-size: 2em; margin: 15px 0 10px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                        BÀI 1: TẬP HỢP & PHẦN TỬ
+                    </h1>
+                    <p style="font-size: 1.1em; color: #FDF2F8; font-weight: 600;">
+                        🌟 <i>Nghệ thuật phân loại & Bí mật của những chiếc hộp kỳ diệu</i> 🌟
+                    </p>
+
+                    <div style="margin-top: 40px; display: inline-flex; gap: 20px; background: rgba(255,255,255,0.15); padding: 12px 30px; border-radius: 50px; backdrop-filter: blur(10px);">
+                        <span style="font-size: 0.8em; font-weight: 700;">👧 Học sinh: <b>Phương Thảo</b></span>
+                        <span style="font-size: 0.8em; font-weight: 700;">⏱️ Thời lượng: <b>2 Tiết (90 phút)</b></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 2: MỤC TIÊU BÀI HỌC -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">🎯 Mục Tiêu Chuyến Khám Phá Hôm Nay</h3>
+                    <span class="slide-sub">TOÁN 6 - BÀI 1</span>
+                </div>
+                
+                <div class="grid-3" style="margin-top: 20px;">
+                    <div class="card card-primary fragment fade-up">
+                        <div style="font-size: 2em; margin-bottom: 10px;">📦</div>
+                        <h4 style="font-size: 0.9em; color: #3730A3;">1. Hiểu Bản Chất</h4>
+                        <p style="font-size: 0.75em; color: #4B5563;">Biết thế nào là <b>Tập hợp</b> và <b>Phần tử</b> qua đồ vật, thú cưng quen thuộc.</p>
+                    </div>
+
+                    <div class="card card-pink fragment fade-up">
+                        <div style="font-size: 2em; margin-bottom: 10px;">✍️</div>
+                        <h4 style="font-size: 0.9em; color: #9D174D;">2. Thành Thạo Ký Hiệu</h4>
+                        <p style="font-size: 0.75em; color: #4B5563;">Dùng chuẩn các ký hiệu ngoặc nhọn $\{ \}$, dấu thuộc $\in$, không thuộc $\notin$.</p>
+                    </div>
+
+                    <div class="card card-green fragment fade-up">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🧠</div>
+                        <h4 style="font-size: 0.9em; color: #065F46;">3. Làm Chủ 2 Cách Viết</h4>
+                        <p style="font-size: 0.75em; color: #4B5563;">Viết tập hợp bằng cách <b>Liệt kê</b> hoặc <b>Chỉ ra tính chất đặc trưng</b>.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: TIẾT 1 KHỞI ĐỘNG -->
+            <section data-background="#EEF2FF">
+                <span class="badge badge-purple" style="font-size: 0.8em;">🕒 TIẾT 1: KHÁM PHÁ BẢN CHẤT TẬP HỢP (45 PHÚT)</span>
+                <h2 style="color: #312E81; margin-top: 15px;">Câu Chuyện Chiếc Hộp Bút Của Thảo</h2>
+                
+                <div class="card card-yellow fragment" style="margin-top: 25px;">
+                    <p style="font-size: 0.85em; line-height: 1.6;">
+                        🎨 <b>Bố hỏi Phương Thảo:</b> <br>
+                        <i>"Nếu bố muốn gom tất cả các loại bút vẽ yêu thích của con lại một chỗ, con sẽ bỏ những gì vào trong chiếc hộp?"</i>
+                    </p>
+                </div>
+
+                <div class="fragment" style="margin-top: 20px;">
+                    <span class="tag-pill">✏️ Bút chì</span>
+                    <span class="tag-pill">🖍️ Sáp màu</span>
+                    <span class="tag-pill">🖊️ Bút dạ</span>
+                    <span class="tag-pill">🖌️ Cọ vẽ</span>
+                </div>
+
+                <div class="card card-primary fragment" style="margin-top: 20px; text-align: center;">
+                    <p style="font-size: 0.9em; font-weight: 800; color: #3730A3;">
+                        👉 Chiếc hộp chứa các món đồ đó chính là một <span class="highlight-box">TẬP HỢP</span>!<br>
+                        👉 Mỗi cây bút ở bên trong là một <span class="highlight-box">PHẦN TỬ</span>!
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: KHÁI NIỆM TẬP HỢP TRONG ĐỜI SỐNG -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">1. Tập Hợp Là Gì?</h3>
+                    <span class="slide-sub">KHÁM PHÁ KIẾN THỨC</span>
+                </div>
+
+                <div class="card card-primary" style="margin-bottom: 20px;">
+                    <p style="font-size: 0.85em;">
+                        <b>Định nghĩa:</b> <b>Tập hợp</b> là sự gom lại của các đồ vật, con vật, con số... có chung một đặc điểm xác định.
+                    </p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card card-pink fragment">
+                        <h4 style="font-size: 0.8em; color: #9D174D;">🏡 Trong gia đình:</h4>
+                        <p style="font-size: 0.75em;">Tập hợp các thành viên gia đình mình:<br>
+                        <b>{Bố, Mẹ, Phương Thảo, Em}</b></p>
+                    </div>
+
+                    <div class="card card-green fragment">
+                        <h4 style="font-size: 0.8em; color: #065F46;">🐾 Thế giới động vật:</h4>
+                        <p style="font-size: 0.75em;">Tập hợp thú cưng nuôi trong nhà:<br>
+                        <b>{Mèo, Chó, Thỏ, Hamster}</b></p>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-yellow fragment">
+                        <h4 style="font-size: 0.8em; color: #92400E;">📅 Thời gian:</h4>
+                        <p style="font-size: 0.75em;">Tập hợp các ngày cuối tuần:<br>
+                        <b>{Thứ Bảy, Chủ Nhật}</b></p>
+                    </div>
+
+                    <div class="card card-primary fragment">
+                        <h4 style="font-size: 0.8em; color: #3730A3;">🔢 Các con số:</h4>
+                        <p style="font-size: 0.75em;">Tập hợp các số tự nhiên nhỏ hơn 5:<br>
+                        <b>{0, 1, 2, 3, 4}</b></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: CÁCH ĐẶT TÊN & KÝ HIỆU -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">2. Cách Đặt Tên & Ký Hiệu Tập Hợp</h3>
+                    <span class="slide-sub">QUY TẮC TOÁN HỌC</span>
+                </div>
+
+                <div class="rule-card fragment">
+                    <div class="rule-num">A</div>
+                    <div>
+                        <b style="color: #4F46E5; font-size: 0.85em;">Tên của tập hợp:</b>
+                        <p style="font-size: 0.75em; margin-top: 4px;">Luôn dùng các <b>chữ cái in hoa</b>: $A, B, C, X, Y, M, N...$</p>
+                    </div>
+                </div>
+
+                <div class="rule-card fragment">
+                    <div class="rule-num">{ }</div>
+                    <div>
+                        <b style="color: #4F46E5; font-size: 0.85em;">Dấu nhốt phần tử:</b>
+                        <p style="font-size: 0.75em; margin-top: 4px;">Các phần tử phải nằm trong <b>dấu ngoặc nhọn</b> $\{ \}$, ngăn cách bởi <b>dấu chấm phẩy</b> <code style="color:red;">;</code></p>
+                    </div>
+                </div>
+
+                <div class="card card-yellow fragment" style="text-align: center;">
+                    <p style="font-size: 0.85em;">
+                        🌟 <b>Ví dụ:</b> Gọi $M$ là tập hợp 3 màu vẽ yêu thích của Thảo:
+                    </p>
+                    <div style="font-size: 1.1em; font-weight: 800; color: #92400E; margin-top: 8px;">
+                        $M = \{\text{Hồng}; \text{Xanh pastel}; \text{Tím}\}$
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: KÝ HIỆU THUỘC VÀ KHÔNG THUỘC -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">3. Ký Hiệu "Thuộc" $\in$ và "Không Thuộc" $\notin$</h3>
+                    <span class="slide-sub">NGÔI NHÀ TẬP HỢP</span>
+                </div>
+
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card card-green fragment">
+                        <div style="text-align: center;">
+                            <span class="math-symbol" style="font-size: 2.2em; color: #059669;">$\in$</span>
+                            <h4 style="color: #065F46; font-size: 0.9em; margin: 8px 0;">THUỘC VỀ</h4>
+                            <span class="badge badge-green">Ở trong nhà</span>
+                        </div>
+                        <p style="font-size: 0.75em; margin-top: 10px;">
+                            Nếu $x$ là phần tử của tập hợp $A$, ta viết: <br>
+                            <b style="font-size: 1.1em; color: #047857;">$x \in A$</b>
+                        </p>
+                    </div>
+
+                    <div class="card card-pink fragment">
+                        <div style="text-align: center;">
+                            <span class="math-symbol" style="font-size: 2.2em; color: #DC2626;">$\notin$</span>
+                            <h4 style="color: #991B1B; font-size: 0.9em; margin: 8px 0;">KHÔNG THUỘC VỀ</h4>
+                            <span class="badge badge-pink">Ở ngoài đường</span>
+                        </div>
+                        <p style="font-size: 0.75em; margin-top: 10px;">
+                            Nếu $y$ không phải phần tử của tập hợp $A$, ta viết: <br>
+                            <b style="font-size: 1.1em; color: #B91C1C;">$y \notin A$</b>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card card-primary fragment" style="margin-top: 15px;">
+                    <p style="font-size: 0.8em;">
+                        🐾 Cho tập thú cưng: $G = \{\text{Mèo}; \text{Chó}; \text{Thỏ}\}$. <br>
+                        👉 $\text{Mèo} \in G$ (Mèo ở trong nhà) &nbsp;|&nbsp; 👉 $\text{Cá mập} \notin G$ (Cá mập ở ngoài biển)
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: SƠ ĐỒ VENN -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">4. Sơ Đồ Venn – Vẽ Tranh Toán Học</h3>
+                    <span class="slide-sub">TRỰC QUAN HÓA</span>
+                </div>
+
+                <div class="grid-2" style="align-items: center;">
+                    <div>
+                        <div class="venn-circle">
+                            <span class="venn-title">Tập hợp G</span>
+                            <div class="venn-item">• Mèo 🐱</div>
+                            <div class="venn-item">• Chó 🐶</div>
+                            <div class="venn-item">• Thỏ 🐰</div>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px; font-size: 0.75em; color: #DC2626; font-weight: 700;">
+                            • Khủng long 🦖 (ở ngoài vòng tròn)
+                        </div>
+                    </div>
+
+                    <div class="card card-yellow">
+                        <h4 style="font-size: 0.85em; color: #92400E;">🎨 Mẹo vẽ sơ đồ Venn:</h4>
+                        <ul style="font-size: 0.75em; line-height: 1.8; padding-left: 20px;">
+                            <li>Vẽ một đường cong khép kín (hình tròn, elip).</li>
+                            <li>Ghi tên tập hợp ở góc ngoài.</li>
+                            <li>Mỗi phần tử bên trong được biểu diễn bằng <b>một dấu chấm •</b> kèm tên.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8: 3 NGUYÊN TẮC VÀNG -->
+            <section data-background="#FFFBEB">
+                <span class="badge badge-yellow" style="font-size: 0.8em;">⚠️ ĐẶC BIỆT CHÚ Ý</span>
+                <h2 style="color: #92400E; margin-top: 10px;">3 "Luật Bất Thành Văn" Của Tập Hợp</h2>
+
+                <div style="margin-top: 25px;">
+                    <div class="rule-card fragment" style="border-left-color: #F59E0B;">
+                        <div class="rule-num" style="background: #F59E0B;">1</div>
+                        <div>
+                            <b style="color: #B45309; font-size: 0.85em;">MỖI PHẦN TỬ CHỈ XUẤT HIỆN ĐÚNG 1 LẦN:</b>
+                            <p style="font-size: 0.75em; margin-top: 4px;">Tuyệt đối không bao giờ viết 2 chữ hoặc 2 số giống hệt nhau trong ngoặc $\{ \}$.</p>
+                        </div>
+                    </div>
+
+                    <div class="rule-card fragment" style="border-left-color: #10B981;">
+                        <div class="rule-num" style="background: #10B981;">2</div>
+                        <div>
+                            <b style="color: #047857; font-size: 0.85em;">THỨ TỰ KHÔNG QUAN TRỌNG:</b>
+                            <p style="font-size: 0.75em; margin-top: 4px;">$\{\text{Mèo}; \text{Chó}\}$ và $\{\text{Chó}; \text{Mèo}\}$ là cùng một tập hợp như nhau.</p>
+                        </div>
+                    </div>
+
+                    <div class="rule-card fragment" style="border-left-color: #EC4899;">
+                        <div class="rule-num" style="background: #EC4899;">3</div>
+                        <div>
+                            <b style="color: #BE185D; font-size: 0.85em;">BẮT BUỘC PHẢI CÓ DẤU NGOẶC NHỌN:</b>
+                            <p style="font-size: 0.75em; margin-top: 4px;">Dùng ngoặc tròn $( )$ hoặc ngoặc vuông $[ ]$ là bị trừ điểm ngay!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 9: THỬ THÁCH TIẾT 1 -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">🎮 Thử Thách Tiết 1: Vượt Bẫy Lặp Chữ</h3>
+                    <span class="slide-sub">LUYỆN TẬP TẠI CHỖ</span>
+                </div>
+
+                <div class="card card-pink">
+                    <p style="font-size: 0.85em;">
+                        🌟 <b>Thử thách cho Phương Thảo:</b> <br>
+                        Viết tập hợp $T$ gồm các chữ cái có mặt trong từ: <br>
+                        <span style="font-size: 1.4em; font-weight: 900; color: #BE185D; letter-spacing: 4px;">"HOA HONG"</span>
+                    </p>
+                </div>
+
+                <div class="fragment" style="margin-top: 20px;">
+                    <div class="card card-primary">
+                        <h4 style="font-size: 0.8em; color: #3730A3;">🔍 Bố và con cùng kiểm tra nhé:</h4>
+                        <p style="font-size: 0.75em;">Các chữ cái: H - O - A - H - O - N - G</p>
+                        <p style="font-size: 0.75em; color: #DC2626; font-weight: 700;">👉 Bẫy: Chữ H xuất hiện 2 lần, Chữ O xuất hiện 2 lần!</p>
+                        <div style="font-size: 1.1em; font-weight: 800; color: #047857; margin-top: 10px;">
+                            ✅ Đáp án chuẩn: $T = \{\text{H}; \text{O}; \text{A}; \text{N}; \text{G}\}$
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 10: GIẢI LAO -->
+            <section data-background="linear-gradient(135deg, #A7F3D0 0%, #34D399 100%)">
+                <div style="text-align: center; color: #064E3B;">
+                    <span style="font-size: 4em;">☕ 🧘‍♀️ 🍎</span>
+                    <h2 style="color: #064E3B; font-size: 1.8em; margin: 15px 0;">GIẢI LAO 5 - 10 PHÚT NHÉ!</h2>
+                    <p style="font-size: 1em; font-weight: 700;">
+                        Phương Thảo hãy uống một ngụm nước, vươn vai thư giãn mắt.<br>
+                        Tiết 2 bố con mình sẽ khám phá: <b>Bí mật của 2 cách viết tập hợp</b>!
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 11: TIẾT 2 KHỞI ĐỘNG -->
+            <section data-background="#FDF2F8">
+                <span class="badge badge-pink" style="font-size: 0.8em;">🕒 TIẾT 2: 2 CÁCH CHO TẬP HỢP & ỨNG DỤNG (45 PHÚT)</span>
+                <h2 style="color: #831843; margin-top: 15px;">Bài Toán Ghi Danh Sách Toàn Trường</h2>
+
+                <div class="card card-yellow fragment" style="margin-top: 25px;">
+                    <p style="font-size: 0.85em; line-height: 1.6;">
+                        🤔 <b>Bố đố Thảo:</b> <br>
+                        <i>"Nếu ghi tên 3 bạn thân nhất, con ghi ra từng bạn rất nhanh. Nhưng nếu bảo con ghi tên <b>1000 học sinh</b> toàn trường, con có ngồi chép từng bạn ra được không?"</i>
+                    </p>
+                </div>
+
+                <div class="card card-green fragment" style="margin-top: 20px; text-align: center;">
+                    <p style="font-size: 0.9em; font-weight: 800; color: #065F46;">
+                        👉 Vì vậy, Toán học sinh ra <span class="highlight-box">2 CÁCH</span> để viết một tập hợp!
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 12: SO SÁNH 2 CÁCH VIẾT -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">2 Cách Mô Tả Một Tập Hợp</h3>
+                    <span class="slide-sub">BẢNG SO SÁNH TRỰC QUAN</span>
+                </div>
+
+                <div class="grid-2" style="margin-top: 15px;">
+                    <div class="card card-primary fragment">
+                        <span class="badge badge-purple">CÁCH 1</span>
+                        <h4 style="font-size: 0.85em; color: #3730A3;">Liệt Kê Từng Phần Tử</h4>
+                        <p style="font-size: 0.7em; color: #64748B;">Kể tên từng bạn một (dùng khi ít phần tử).</p>
+                        <div style="background: white; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px dashed #6366F1;">
+                            <b style="font-size: 0.85em; color: #4338CA;">$A = \{0; 1; 2; 3; 4\}$</b>
+                        </div>
+                    </div>
+
+                    <div class="card card-green fragment">
+                        <span class="badge badge-green">CÁCH 2</span>
+                        <h4 style="font-size: 0.85em; color: #065F46;">Chỉ Ra Tính Chất Đặc Trưng</h4>
+                        <p style="font-size: 0.7em; color: #64748B;">Nêu đặc điểm chung (dùng khi nhiều phần tử).</p>
+                        <div style="background: white; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px dashed #10B981;">
+                            <b style="font-size: 0.8em; color: #047857;">$A = \{x \in \mathbb{N} \mid x < 5\}$</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-yellow fragment" style="margin-top: 15px;">
+                    <p style="font-size: 0.75em;">
+                        🗣️ <b>Cách đọc ký hiệu:</b> $\{x \in \mathbb{N} \mid x < 5\}$ đọc là: <br>
+                        <i>"Tập hợp gồm các số tự nhiên $x$ sao cho $x$ nhỏ hơn 5".</i>
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 13: TẬP HỢP SỐ TỰ NHIÊN N VÀ N* -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">Tập Hợp $\mathbb{N}$ và $\mathbb{N}^*$</h3>
+                    <span class="slide-sub">2 TẬP HỢP SỐ QUAN TRỌNG NHẤT</span>
+                </div>
+
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card card-primary fragment">
+                        <div style="font-size: 1.8em; font-weight: 900; color: #4338CA;">$\mathbb{N}$</div>
+                        <h4 style="font-size: 0.85em; color: #3730A3;">Tập các số tự nhiên</h4>
+                        <p style="font-size: 0.8em; margin-top: 10px;">
+                            Bắt đầu từ số <b>0</b>: <br>
+                            <b style="color: #4F46E5;">$\mathbb{N} = \{0; 1; 2; 3; 4; 5; \dots\}$</b>
+                        </p>
+                    </div>
+
+                    <div class="card card-pink fragment">
+                        <div style="font-size: 1.8em; font-weight: 900; color: #BE185D;">$\mathbb{N}^*$</div>
+                        <h4 style="font-size: 0.85em; color: #9D174D;">Tập số tự nhiên KHÁC 0</h4>
+                        <p style="font-size: 0.8em; margin-top: 10px;">
+                            Bắt đầu từ số <b>1</b>: <br>
+                            <b style="color: #DB2777;">$\mathbb{N}^* = \{1; 2; 3; 4; 5; \dots\}$</b>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card card-yellow fragment" style="margin-top: 15px; text-align: center;">
+                    <p style="font-size: 0.8em; font-weight: 700; color: #92400E;">
+                        ⭐ <b>Mẹo nhớ siêu dễ:</b> Dấu sao $*$ giống như một ngôi sao bay vụt qua, cuốn mất số 0 đi!
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 14: BÀI TẬP THỰC TẾ: GIỎ ĐI SIÊU THỊ -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">🛒 Ứng Dụng Thực Tế: Giỏ Đi Siêu Thị Của Mẹ</h3>
+                    <span class="slide-sub">BÀI TẬP VUI</span>
+                </div>
+
+                <div class="card card-primary">
+                    <p style="font-size: 0.8em; line-height: 1.6;">
+                        Mẹ đi siêu thị và mua các món hàng sau: <br>
+                        🥛 <b>2 vỉ sữa dâu</b>, &nbsp; 🍌 <b>1 nải chuối</b>, &nbsp; 🥨 <b>3 gói bánh quy</b>, &nbsp; 🥛 <b>2 vỉ sữa dâu nữa</b>.
+                    </p>
+                    <p style="font-size: 0.8em; margin-top: 10px; color: #4338CA; font-weight: 800;">
+                        👉 Hãy giúp mẹ viết tập hợp $S$ các <u>loại hàng hóa</u> mà mẹ đã mua?
+                    </p>
+                </div>
+
+                <div class="fragment" style="margin-top: 15px;">
+                    <div class="card card-green">
+                        <h4 style="font-size: 0.8em; color: #065F46;">✅ Lời giải:</h4>
+                        <div style="font-size: 1em; font-weight: 800; color: #047857;">
+                            $S = \{\text{Sữa dâu}; \text{Chuối}; \text{Bánh quy}\}$
+                        </div>
+                        <p style="font-size: 0.7em; color: #4B5563; margin-top: 6px;">
+                            💡 <i>Nhắc Thảo: Mặc dù mẹ mua sữa dâu 2 lần, nhưng trong tập hợp chỉ ghi 1 lần duy nhất thôi nhé!</i>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 15: CÔNG THỨC TÍNH SỐ PHẦN TỬ -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">🔢 Tuyệt Chiêu Đếm Số Phần Tử Của Dãy Số</h3>
+                    <span class="slide-sub">BÍ KÍP TÍNH NHANH</span>
+                </div>
+
+                <div class="card card-primary">
+                    <p style="font-size: 0.8em;">Cho tập hợp: $C = \{10; 11; 12; 13; \dots; 99\}$. Tập hợp $C$ có bao nhiêu phần tử?</p>
+                </div>
+
+                <div class="card card-yellow fragment" style="margin-top: 15px;">
+                    <h4 style="font-size: 0.85em; color: #92400E; text-align: center;">⚡ CÔNG THỨC VÀNG ⚡</h4>
+                    <div style="font-size: 1.1em; font-weight: 800; color: #B45309; text-align: center; margin: 10px 0;">
+                        Số phần tử = (Số cuối - Số đầu) : Khoảng cách + 1
+                    </div>
+                </div>
+
+                <div class="card card-green fragment" style="margin-top: 15px;">
+                    <p style="font-size: 0.8em; font-weight: 700; color: #047857;">
+                        👉 Áp dụng tính ngay: <br>
+                        $$\text{Số phần tử của } C = (99 - 10) : 1 + 1 = 89 + 1 = 90 \text{ (phần tử)}$$
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 16: TỔNG KẾT THẦN CHÚ 3 KHÔNG -->
+            <section data-background="linear-gradient(135deg, #4F46E5 0%, #312E81 100%)">
+                <div style="color: white; text-align: center;">
+                    <span class="badge" style="background: #FDE68A; color: #92400E; font-size: 0.8em;">✨ TỔNG KẾT BÀI HỌC</span>
+                    <h2 style="color: white; font-size: 1.8em; margin: 15px 0;">"THẦN CHÚ 3 KHÔNG" CỦA TẬP HỢP</h2>
+
+                    <div style="display: flex; flex-direction: column; gap: 15px; max-width: 650px; margin: 25px auto 0 auto; text-align: left;">
+                        <div style="background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; backdrop-filter: blur(5px);">
+                            <b style="color: #FDE047; font-size: 1em;">1. KHÔNG THIẾU NGOẶC NHỌN:</b> 
+                            <span style="font-size: 0.85em;">Luôn nhốt trong dấu $\{ \}$</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; backdrop-filter: blur(5px);">
+                            <b style="color: #FDE047; font-size: 1em;">2. KHÔNG LẶP LẠI PHẦN TỬ:</b> 
+                            <span style="font-size: 0.85em;">Mỗi bạn chỉ được ghi đúng 1 lần</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; backdrop-filter: blur(5px);">
+                            <b style="color: #FDE047; font-size: 1em;">3. KHÔNG QUAN TRỌNG THỨ TỰ:</b> 
+                            <span style="font-size: 0.85em;">Đứng trước hay đứng sau đều đúng</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 17: PHIẾU THỬ THÁCH CUỐI BUỔI -->
+            <section>
+                <div class="slide-header">
+                    <h3 class="slide-title">🏆 Phiếu Thử Thách Nhận Điểm 10</h3>
+                    <span class="slide-sub">BỐ CHẤM ĐIỂM CHO CON</span>
+                </div>
+
+                <div class="card card-primary" style="margin-bottom: 12px;">
+                    <p style="font-size: 0.75em;">
+                        <b>Câu 1:</b> Viết tập hợp $M$ các tháng trong năm có <b>30 ngày</b>.
+                    </p>
+                </div>
+
+                <div class="card card-pink" style="margin-bottom: 12px;">
+                    <p style="font-size: 0.75em;">
+                        <b>Câu 2:</b> Cho tập hợp $E = \{x \in \mathbb{N}^* \mid x \le 5\}$. Hãy liệt kê các phần tử của $E$.
+                    </p>
+                </div>
+
+                <div class="card card-green" style="margin-bottom: 12px;">
+                    <p style="font-size: 0.75em;">
+                        <b>Câu 3:</b> Điền Đúng (Đ) hoặc Sai (S): <br>
+                        a) $0 \in \mathbb{N}$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                        b) $0 \in \mathbb{N}^*$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                        c) $\{1; 2\} = \{2; 1\}$
+                    </p>
+                </div>
+
+                <div class="fragment" style="text-align: center; margin-top: 15px;">
+                    <span class="badge badge-yellow" style="font-size: 0.9em; padding: 10px 30px;">
+                        🎉 CHÚC MỪNG PHƯƠNG THẢO ĐÃ HOÀN THÀNH XUẤT SẮC! 🎉
+                    </span>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Core & Plugins -->
+    <script src="dist/reveal.js"></script>
+    <script src="dist/plugin/notes.js"></script>
+    <script src="dist/plugin/markdown.js"></script>
+    <script src="dist/plugin/highlight.js"></script>
+    <script src="dist/plugin/math.js"></script>
+    
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            transition: 'slide',
+            transitionSpeed: 'default',
+            controls: true,
+            progress: true,
+            center: true,
+
+            mathjax3: {
+                mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+                },
+                options: {
+                    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                }
+            },
+
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax3 ]
+        });
+    </script>
+</body>
+</html>
