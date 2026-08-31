@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>Đề Kiểm Tra Đánh Giá Năng Lực Toán 6 - Bài 1: Tập Hợp (Phạm Phương Thảo)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', serif;
+            background: #F8FAFC;
+            color: #0F172A;
+            padding: 75px 12px 60px 12px;
+            display: flex;
+            justify-content: center;
+            touch-action: pan-x pan-y pinch-zoom;
+        }
+
+        /* Thanh công cụ Bút iPad (Sticky Toolbar) */
+        .toolbar {
+            position: fixed;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #3B82F6;
+            padding: 6px 14px;
+            border-radius: 40px;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(12px);
+            max-width: 98vw;
+            overflow-x: auto;
+        }
+
+        .tool-btn {
+            background: #F8FAFC;
+            border: 2px solid transparent;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #334155;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .tool-btn.active {
+            background: #EFF6FF;
+            border-color: #2563EB;
+            color: #2563EB;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+            color: white !important;
+            border: none !important;
+            padding: 7px 16px !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+        }
+
+        .color-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.15s;
+        }
+        .color-dot.active {
+            transform: scale(1.25);
+            outline: 2px solid #2563EB;
+        }
+
+        .divider {
+            width: 1px;
+            height: 22px;
+            background: #CBD5E1;
+            margin: 0 2px;
+        }
+
+        /* Khung giấy làm bài */
+        .paper-container {
+            width: 100%;
+            max-width: 880px;
+            background: #FFFFFF;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            padding: 38px 42px;
+            font-size: 15.5px;
+            line-height: 1.65;
+            border: 1px solid #E2E8F0;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .header-table td { vertical-align: top; }
+
+        .badge-exam {
+            display: inline-block;
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            color: #1E40AF;
+            border: 1.5px solid #93C5FD;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: 900;
+            font-size: 20px;
+            text-transform: uppercase;
+            color: #1E3A8A;
+            margin: 6px 0 4px 0;
+        }
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            font-size: 14px;
+            color: #64748B;
+            margin-bottom: 18px;
+        }
+
+        .score-box {
+            border: 2px solid #1E3A8A;
+            width: 100%;
+            margin-bottom: 22px;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .score-box th {
+            background: #EFF6FF;
+            color: #1E3A8A;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 900;
+            border: 1px solid #BFDBFE;
+        }
+        .score-box td {
+            border: 1px solid #BFDBFE;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-weight: 900;
+            font-size: 15.5px;
+            text-transform: uppercase;
+            margin-top: 22px;
+            margin-bottom: 12px;
+            color: #1E3A8A;
+            border-bottom: 2px solid #1E3A8A;
+            padding-bottom: 3px;
+        }
+
+        /* Khối câu hỏi Trắc nghiệm */
+        .mcq-card {
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        }
+        .mcq-question {
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #0F172A;
+        }
+        .mcq-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        @media (max-width: 600px) {
+            .mcq-options { grid-template-columns: 1fr; }
+        }
+        .mcq-option {
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mcq-option:hover {
+            border-color: #3B82F6;
+            background: #EFF6FF;
+        }
+        .mcq-option.selected {
+            background: #DBEAFE;
+            border-color: #2563EB;
+            color: #1D4ED8;
+            font-weight: 800;
+        }
+
+        /* Khung viết tay tự luận */
+        .write-box {
+            display: block;
+            width: 100%;
+            border: 2px dashed #93C5FD;
+            background: #F0F9FF;
+            background-image: repeating-linear-gradient(transparent, transparent 38px, #BAE6FD 39px, #BAE6FD 40px);
+            border-radius: 10px;
+            position: relative;
+            margin: 8px 0 14px 0;
+            touch-action: none;
+        }
+        .write-box:focus-within, .write-box.drawing {
+            border-color: #2563EB;
+            background-color: #EFF6FF;
+        }
+
+        .write-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: #2563EB;
+            font-weight: 800;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        /* Nút nộp bài cuối trang */
+        .bottom-submit-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #93C5FD;
+        }
+        .big-submit-btn {
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Modal popup */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.75);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+        .modal-card {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 28px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-icon { font-size: 55px; margin-bottom: 8px; }
+        .modal-title { font-size: 21px; font-weight: 900; color: #1E3A8A; margin-bottom: 6px; }
+        .modal-desc { font-size: 14px; color: #64748B; line-height: 1.5; margin-bottom: 18px; }
+        .score-picker {
+            background: #EFF6FF;
+            border: 2px solid #BFDBFE;
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 18px;
+        }
+        .score-stars { font-size: 28px; color: #F59E0B; letter-spacing: 4px; margin: 4px 0; cursor: pointer; }
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal {
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 13.5px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-modal-primary { background: #2563EB; color: white; }
+        .btn-modal-secondary { background: #F1F5F9; color: #475569; }
+    </style>
+</head>
+<body>
+
+    <!-- THANH CÔNG CỤ BÚT IPAD -->
+    <div class="toolbar">
+        <button class="tool-btn active" id="btn-pen" onclick="setTool('pen')">✏️ Bút viết</button>
+        <button class="tool-btn" id="btn-highlighter" onclick="setTool('highlighter')">🖍️ Dạ quang</button>
+        <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 Tẩy xóa</button>
+        
+        <div class="divider"></div>
+        
+        <!-- Bảng màu mực -->
+        <div class="color-dot active" style="background: #2563EB;" onclick="setColor('#2563EB', this)" title="Mực Xanh"></div>
+        <div class="color-dot" style="background: #DC2626;" onclick="setColor('#DC2626', this)" title="Mực Đỏ"></div>
+        <div class="color-dot" style="background: #1E293B;" onclick="setColor('#1E293B', this)" title="Mực Đen"></div>
+        <div class="color-dot" style="background: #7C3AED;" onclick="setColor('#7C3AED', this)" title="Mực Tím"></div>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" onclick="undoGlobal()" title="Hoàn tác nét vẽ">↩️ Lùi lại</button>
+        <button class="tool-btn" onclick="clearAllCanvases()" style="color: #DC2626;" title="Xóa bài làm">🗑️ Xóa hết</button>
+        
+        <div class="divider"></div>
+
+        <!-- NÚT NỘP BÀI TRÊN TOOLBAR -->
+        <button class="tool-btn btn-submit" onclick="submitHomework()">🚀 Nộp Bài</button>
+    </div>
+
+    <!-- KHUNG TỜ GIẤY BÀI KIỂM TRA -->
+    <div class="paper-container">
+        
+        <a href="index.html" class="home-link">← 🏠 Quay lại Mục Lục Bài Học</a>
+
+        <div style="text-align: center;">
+            <span class="badge-exam">📝 ĐỀ KIỂM TRA ĐÁNH GIÁ CHẤT LƯỢNG HỌC TẬP</span>
+        </div>
+
+        <table class="header-table">
+            <tr>
+                <td style="width: 55%;">
+                    <b>HỌ VÀ TÊN:</b> PHẠM PHƯƠNG THẢO<br>
+                    <b>LỚP:</b> 6 ..... &nbsp;&nbsp;|&nbsp;&nbsp; <b>NGÀY:</b> ..... / ..... / 2026
+                </td>
+                <td style="width: 45%; text-align: right;">
+                    <b>BÀI KIỂM TRA TOÁN 6</b><br>
+                    <b>Thời gian làm bài:</b> 45 phút
+                </td>
+            </tr>
+        </table>
+
+        <div class="title">CHỦ ĐỀ: TẬP HỢP VÀ CÁC PHÉP TOÁN TẬP HỢP</div>
+        <div class="subtitle">(Trắc nghiệm chọn đáp án đúng – Tự luận viết lời giải chi tiết vào các khung bên dưới)</div>
+
+        <table class="score-box">
+            <tr>
+                <th style="width: 30%;">ĐIỂM SỐ</th>
+                <th style="width: 70%;">LỜI NHẬN XÉT CỦA BỐ / THẦY CÔ</th>
+            </tr>
+            <tr>
+                <td style="height: 52px; font-size: 20pt; font-weight: 900; color: #1E3A8A;" id="teacher-score"></td>
+                <td id="teacher-comment" style="font-weight: 600; color: #334155;"></td>
+            </tr>
+        </table>
+
+        <!-- PHẦN 1: TRẮC NGHIỆM -->
+        <div class="section-title">PHẦN I. TRẮC NGHIỆM KHÁCH QUAN (3,0 điểm – Mỗi câu 0,5 điểm)</div>
+
+        <!-- CÂU 1 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 1 (Nhận biết ký hiệu): Cho tập hợp <i>M</i> = {2; 3; 5; 7}. Khẳng định nào sau đây là <b>đúng</b>?</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(1, 'A', this)">A. 5 ∉ <i>M</i></div>
+                <div class="mcq-option" onclick="selectMCQ(1, 'B', this)">B. 7 ∈ <i>M</i></div>
+                <div class="mcq-option" onclick="selectMCQ(1, 'C', this)">C. 2 ⊂ <i>M</i></div>
+                <div class="mcq-option" onclick="selectMCQ(1, 'D', this)">D. {3} ∈ <i>M</i></div>
+            </div>
+        </div>
+
+        <!-- CÂU 2 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 2 (Nhận biết tập số tự nhiên): Ký hiệu <b>N*</b> dùng để chỉ:</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(2, 'A', this)">A. Tập hợp các số tự nhiên bất kỳ.</div>
+                <div class="mcq-option" onclick="selectMCQ(2, 'B', this)">B. Tập hợp các số tự nhiên chẵn.</div>
+                <div class="mcq-option" onclick="selectMCQ(2, 'C', this)">C. Tập hợp các số tự nhiên khác 0.</div>
+                <div class="mcq-option" onclick="selectMCQ(2, 'D', this)">D. Tập hợp các số tự nhiên lớn hơn 10.</div>
+            </div>
+        </div>
+
+        <!-- CÂU 3 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 3 (Thông hiểu cách viết): Viết tập hợp <i>T</i> các chữ cái có mặt trong từ <b>"TOAN HOC"</b>. Cách viết nào sau đây là <b>đúng</b>?</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(3, 'A', this)">A. <i>T</i> = {T; O; A; N; H; O; C}</div>
+                <div class="mcq-option" onclick="selectMCQ(3, 'B', this)">B. <i>T</i> = (T; O; A; N; H; C)</div>
+                <div class="mcq-option" onclick="selectMCQ(3, 'C', this)">C. <i>T</i> = {T; O; A; N; H; C}</div>
+                <div class="mcq-option" onclick="selectMCQ(3, 'D', this)">D. <i>T</i> = {TOAN; HOC}</div>
+            </div>
+        </div>
+
+        <!-- CÂU 4 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 4 (Thông hiểu chuyển đổi cách viết): Cho tập hợp <i>A</i> = {<i>x</i> ∈ <b>N</b> | 4 &lt; <i>x</i> ≤ 8}. Viết tập hợp <i>A</i> dưới dạng liệt kê các phần tử là:</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(4, 'A', this)">A. <i>A</i> = {4; 5; 6; 7; 8}</div>
+                <div class="mcq-option" onclick="selectMCQ(4, 'B', this)">B. <i>A</i> = {5; 6; 7; 8}</div>
+                <div class="mcq-option" onclick="selectMCQ(4, 'C', this)">C. <i>A</i> = {5; 6; 7}</div>
+                <div class="mcq-option" onclick="selectMCQ(4, 'D', this)">D. <i>A</i> = {4; 5; 6; 7}</div>
+            </div>
+        </div>
+
+        <!-- CÂU 5 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 5 (Thông hiểu giao tập hợp): Cho hai tập hợp <i>X</i> = {1; 3; 5; 7} và <i>Y</i> = {2; 3; 4; 5}. Giao của hai tập hợp <i>X</i> và <i>Y</i> là:</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(5, 'A', this)">A. <i>X</i> ∩ <i>Y</i> = {3; 5}</div>
+                <div class="mcq-option" onclick="selectMCQ(5, 'B', this)">B. <i>X</i> ∩ <i>Y</i> = {1; 2; 3; 4; 5; 7}</div>
+                <div class="mcq-option" onclick="selectMCQ(5, 'C', this)">C. <i>X</i> ∩ <i>Y</i> = {1; 7}</div>
+                <div class="mcq-option" onclick="selectMCQ(5, 'D', this)">D. <i>X</i> ∩ <i>Y</i> = ∅</div>
+            </div>
+        </div>
+
+        <!-- CÂU 6 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 6 (Vận dụng đếm số phần tử): Tập hợp <i>B</i> = {10; 12; 14; 16; ...; 40} có số phần tử là:</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(6, 'A', this)">A. 15 phần tử.</div>
+                <div class="mcq-option" onclick="selectMCQ(6, 'B', this)">B. 16 phần tử.</div>
+                <div class="mcq-option" onclick="selectMCQ(6, 'C', this)">C. 30 phần tử.</div>
+                <div class="mcq-option" onclick="selectMCQ(6, 'D', this)">D. 31 phần tử.</div>
+            </div>
+        </div>
+
+        <!-- PHẦN 2: TỰ LUẬN -->
+        <div class="section-title">PHẦN II. TỰ LUẬN (7,0 điểm)</div>
+
+        <!-- CÂU 7 -->
+        <div style="margin-bottom: 16px;">
+            <b>Câu 7 (2,0 điểm – Biểu diễn tập hợp bằng 2 cách):</b>
+            <div style="margin-top: 4px;">a) Cho tập hợp <i>P</i> = {<i>x</i> ∈ <b>N*</b> | <i>x</i> ≤ 5}. Hãy viết lại tập hợp <i>P</i> bằng cách liệt kê các phần tử:</div>
+            <div class="write-box" style="height: 55px;"><canvas class="write-canvas" id="test_q7_a"></canvas></div>
+
+            <div style="margin-top: 8px;">b) Cho tập hợp <i>Q</i> = {10; 11; 12; 13; 14; 15}. Hãy viết lại tập hợp <i>Q</i> bằng cách chỉ ra tính chất đặc trưng của các phần tử:</div>
+            <div class="write-box" style="height: 55px;"><canvas class="write-canvas" id="test_q7_b"></canvas></div>
+        </div>
+
+        <!-- CÂU 8 -->
+        <div style="margin-bottom: 16px;">
+            <b>Câu 8 (2,0 điểm – Giao của hai tập hợp & Sơ đồ Venn):</b>
+            <div style="margin-top: 4px;">Cho hai tập hợp: <i>A</i> = {<i>a</i>; <i>b</i>; <i>c</i>; <i>d</i>; <i>e</i>} và <i>B</i> = {<i>c</i>; <i>d</i>; <i>e</i>; <i>g</i>; <i>h</i>}.</div>
+            <div style="margin-top: 4px;">a) Tìm tập hợp <i>A</i> ∩ <i>B</i>:</div>
+            <div class="write-box" style="height: 52px;"><canvas class="write-canvas" id="test_q8_a"></canvas></div>
+
+            <div style="margin-top: 8px;">b) Vẽ sơ đồ Venn biểu diễn hai tập hợp <i>A</i> và <i>B</i> vào khung bên dưới:</div>
+            <div class="write-box" style="height: 140px; background-image: none;"><canvas class="write-canvas" id="test_q8_b"></canvas></div>
+
+            <div style="margin-top: 8px;">c) Cho thêm tập hợp <i>C</i> = {<i>m</i>; <i>n</i>}. Hãy tìm <i>A</i> ∩ <i>C</i>:</div>
+            <div class="write-box" style="height: 52px;"><canvas class="write-canvas" id="test_q8_c"></canvas></div>
+        </div>
+
+        <!-- CÂU 9 -->
+        <div style="margin-bottom: 16px;">
+            <b>Câu 9 (1,5 điểm – Tính số phần tử của tập hợp số):</b>
+            <div style="margin-top: 4px;">a) Cho tập hợp <i>E</i> gồm các số tự nhiên có hai chữ số chia hết cho 5: <i>E</i> = {10; 15; 20; 25; ...; 95}. Tính số phần tử của tập hợp <i>E</i>:</div>
+            <div class="write-box" style="height: 75px;"><canvas class="write-canvas" id="test_q9_a"></canvas></div>
+
+            <div style="margin-top: 8px;">b) Tính số phần tử của tập hợp <i>F</i> = {<i>x</i> ∈ <b>N</b> | 100 ≤ <i>x</i> ≤ 999}:</div>
+            <div class="write-box" style="height: 75px;"><canvas class="write-canvas" id="test_q9_b"></canvas></div>
+        </div>
+
+        <!-- CÂU 10 -->
+        <div style="margin-bottom: 16px;">
+            <b>Câu 10 (1,5 điểm – Vận dụng bài toán thực tế bằng Sơ đồ Venn):</b>
+            <div style="margin-top: 4px;">
+                Lớp 6A có <b>42 bạn học sinh</b>. Trong giờ ngoại khóa thể thao:<br>
+                • Có <b>25 bạn</b> đăng ký tham gia môn Bơi lội.<br>
+                • Có <b>22 bạn</b> đăng ký tham gia môn Cầu lông.<br>
+                • Biết rằng có <b>3 bạn</b> không đăng ký tham gia môn nào trong hai môn trên.<br>
+                <b>Hỏi:</b> Có bao nhiêu bạn học sinh đăng ký tham gia <b>cả hai môn</b> Bơi lội và Cầu lông?
+            </div>
+            <div class="write-box" style="height: 140px;"><canvas class="write-canvas" id="test_q10"></canvas></div>
+        </div>
+
+        <!-- NÚT NỘP BÀI CUỐI TRANG -->
+        <div class="bottom-submit-container">
+            <button class="big-submit-btn" onclick="submitHomework()">
+                🎯 HOÀN THÀNH BÀI KIỂM TRA & NỘP BÀI 🎯
+            </button>
+        </div>
+
+    </div>
+
+    <!-- POPUP CHÚC MỪNG HOÀN THÀNH -->
+    <div class="modal-overlay" id="submit-modal">
+        <div class="modal-card">
+            <div class="modal-icon">🎯 📜 🌟</div>
+            <h2 class="modal-title">HOÀN THÀNH BÀI KIỂM TRA!</h2>
+            <p class="modal-desc">
+                Chúc mừng <b>Phạm Phương Thảo</b> đã hoàn thành 100% bài kiểm tra Chủ đề Tập hợp!<br>
+                Bài làm đã được ghi nhận đầy đủ.
+            </p>
+
+            <div class="score-picker">
+                <div style="font-size: 13px; font-weight: 800; color: #1E40AF;">BỐ CHẤM ĐIỂM BÀI LÀM:</div>
+                <div class="score-stars" onclick="giveScore(10)">⭐⭐⭐⭐⭐</div>
+                <div style="font-size: 14px; font-weight: 900; color: #2563EB;" id="score-text">10 / 10 ĐIỂM XUẤT SẮC! 💯</div>
+            </div>
+
+            <div class="modal-btn-group">
+                <button class="btn-modal btn-modal-secondary" onclick="closeModal()">✏️ Xem lại bài</button>
+                <a href="index.html" class="btn-modal btn-modal-primary">🏠 Về Trang Chủ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT QUẢN LÝ Ô VIẾT & TRẮC NGHIỆM -->
+    <script>
+        let currentTool = 'pen';
+        let currentColor = '#2563EB';
+        
+        const canvasMap = new Map();
+        const globalStrokeLog = [];
+        const mcqAnswers = {};
+
+        function selectMCQ(questionNumber, optionKey, element) {
+            mcqAnswers[questionNumber] = optionKey;
+            const parent = element.parentElement;
+            parent.querySelectorAll('.mcq-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            saveToStorage();
+        }
+
+        function initAllCanvases() {
+            const canvases = document.querySelectorAll('.write-canvas');
+            const dpr = window.devicePixelRatio || 1;
+
+            canvases.forEach(canvas => {
+                const parent = canvas.parentElement;
+                const width = parent.offsetWidth;
+                const height = parent.offsetHeight;
+
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+
+                const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (!canvasMap.has(canvas.id)) {
+                    canvasMap.set(canvas.id, {
+                        canvas,
+                        ctx,
+                        width,
+                        height,
+                        strokes: []
+                    });
+                    attachDrawingEvents(canvas);
+                }
+            });
+
+            loadFromStorage();
+        }
+
+        function attachDrawingEvents(canvas) {
+            let isDrawing = false;
+            let lastX = 0, lastY = 0;
+            let currentStroke = null;
+            const parent = canvas.parentElement;
+
+            function getCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.parentElement.offsetWidth / rect.width;
+                const scaleY = canvas.parentElement.offsetHeight / rect.height;
+                return {
+                    x: (e.clientX - rect.left) * scaleX,
+                    y: (e.clientY - rect.top) * scaleY
+                };
+            }
+
+            canvas.addEventListener('pointerdown', (e) => {
+                isDrawing = true;
+                parent.classList.add('drawing');
+                const pos = getCoords(e);
+                lastX = pos.x;
+                lastY = pos.y;
+
+                currentStroke = {
+                    canvasId: canvas.id,
+                    tool: currentTool,
+                    color: currentColor,
+                    points: [{ x: lastX, y: lastY }]
+                };
+            });
+
+            canvas.addEventListener('pointermove', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const pos = getCoords(e);
+                const data = canvasMap.get(canvas.id);
+                const ctx = data.ctx;
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(pos.x, pos.y);
+
+                if (currentTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 22;
+                } else if (currentTool === 'highlighter') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
+                    ctx.lineWidth = 18;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = 2.4;
+                }
+
+                ctx.stroke();
+                lastX = pos.x;
+                lastY = pos.y;
+                currentStroke.points.push({ x: lastX, y: lastY });
+            });
+
+            function endStroke() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    parent.classList.remove('drawing');
+                    if (currentStroke && currentStroke.points.length > 1) {
+                        const data = canvasMap.get(canvas.id);
+                        data.strokes.push(currentStroke);
+                        globalStrokeLog.push(currentStroke);
+                        saveToStorage();
+                    }
+                    currentStroke = null;
+                }
+            }
+
+            canvas.addEventListener('pointerup', endStroke);
+            canvas.addEventListener('pointercancel', endStroke);
+            canvas.addEventListener('pointerleave', endStroke);
+        }
+
+        window.addEventListener('load', initAllCanvases);
+        window.addEventListener('resize', initAllCanvases);
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            if (tool === 'pen') document.getElementById('btn-pen').classList.add('active');
+            if (tool === 'highlighter') document.getElementById('btn-highlighter').classList.add('active');
+            if (tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
+        }
+
+        function setColor(color, elem) {
+            currentColor = color;
+            setTool('pen');
+            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+            if (elem) elem.classList.add('active');
+        }
+
+        function redrawBox(canvasId) {
+            const data = canvasMap.get(canvasId);
+            if (!data) return;
+            const ctx = data.ctx;
+            ctx.clearRect(0, 0, data.canvas.width, data.canvas.height);
+
+            data.strokes.forEach(stroke => {
+                if (stroke.points.length < 2) return;
+                ctx.beginPath();
+                ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+
+                if (stroke.tool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 22;
+                } else if (stroke.tool === 'highlighter') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
+                    ctx.lineWidth = 18;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = stroke.color;
+                    ctx.lineWidth = 2.4;
+                }
+
+                for (let i = 1; i < stroke.points.length; i++) {
+                    ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+                }
+                ctx.stroke();
+            });
+        }
+
+        function undoGlobal() {
+            if (globalStrokeLog.length > 0) {
+                const lastStroke = globalStrokeLog.pop();
+                const data = canvasMap.get(lastStroke.canvasId);
+                if (data) {
+                    data.strokes.pop();
+                    redrawBox(lastStroke.canvasId);
+                    saveToStorage();
+                }
+            }
+        }
+
+        function clearAllCanvases() {
+            if (confirm('Phương Thảo có muốn xóa toàn bộ bài làm để làm lại không?')) {
+                canvasMap.forEach((data, id) => {
+                    data.strokes = [];
+                    data.ctx.clearRect(0, 0, data.canvas.width, data.canvas.height);
+                });
+                globalStrokeLog.length = 0;
+                document.querySelectorAll('.mcq-option').forEach(opt => opt.classList.remove('selected'));
+                for (const key in mcqAnswers) delete mcqAnswers[key];
+                localStorage.removeItem('toan6_bai1_test_data');
+            }
+        }
+
+        function saveToStorage() {
+            try {
+                const storeObj = { strokes: {}, mcq: mcqAnswers };
+                canvasMap.forEach((data, id) => {
+                    storeObj.strokes[id] = data.strokes;
+                });
+                localStorage.setItem('toan6_bai1_test_data', JSON.stringify(storeObj));
+            } catch (e) {}
+        }
+
+        function loadFromStorage() {
+            try {
+                const saved = localStorage.getItem('toan6_bai1_test_data');
+                if (saved) {
+                    const storeObj = JSON.parse(saved);
+                    if (storeObj.strokes) {
+                        for (const id in storeObj.strokes) {
+                            if (canvasMap.has(id)) {
+                                canvasMap.get(id).strokes = storeObj.strokes[id] || [];
+                                redrawBox(id);
+                            }
+                        }
+                    }
+                    if (storeObj.mcq) {
+                        for (const qNum in storeObj.mcq) {
+                            const optKey = storeObj.mcq[qNum];
+                            mcqAnswers[qNum] = optKey;
+                            const cards = document.querySelectorAll('.mcq-card');
+                            if (cards[qNum - 1]) {
+                                const opts = cards[qNum - 1].querySelectorAll('.mcq-option');
+                                opts.forEach(opt => {
+                                    if (opt.innerText.startsWith(optKey)) opt.classList.add('selected');
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function submitHomework() {
+            document.getElementById('submit-modal').style.display = 'flex';
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                setTimeout(() => {
+                    confetti({ particleCount: 90, angle: 60, spread: 60, origin: { x: 0 } });
+                    confetti({ particleCount: 90, angle: 120, spread: 60, origin: { x: 1 } });
+                }, 300);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('submit-modal').style.display = 'none';
+        }
+
+        function giveScore(score) {
+            document.getElementById('teacher-score').innerText = score;
+            document.getElementById('teacher-comment').innerText = 'Con làm bài kiểm tra rất xuất sắc!';
+            alert('Bố đã chấm điểm ' + score + ' cho Phương Thảo!');
+        }
+    </script>
+</body>
+</html>
