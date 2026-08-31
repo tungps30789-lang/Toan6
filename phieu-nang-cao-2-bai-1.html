@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>Phiếu Bài Tập Nâng Cao Tư Duy 2 - Toán 6 (Phạm Phương Thảo)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', serif;
+            background: #F0FDF4;
+            color: #0F172A;
+            padding: 75px 12px 60px 12px;
+            display: flex;
+            justify-content: center;
+            touch-action: pan-x pan-y pinch-zoom;
+        }
+
+        /* Thanh công cụ Bút iPad (Sticky Toolbar) */
+        .toolbar {
+            position: fixed;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #10B981;
+            padding: 6px 14px;
+            border-radius: 40px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(12px);
+            max-width: 98vw;
+            overflow-x: auto;
+        }
+
+        .tool-btn {
+            background: #F8FAFC;
+            border: 2px solid transparent;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #334155;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .tool-btn.active {
+            background: #ECFDF5;
+            border-color: #059669;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+            color: white !important;
+            border: none !important;
+            padding: 7px 16px !important;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4) !important;
+        }
+
+        .color-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.15s;
+        }
+        .color-dot.active {
+            transform: scale(1.25);
+            outline: 2px solid #059669;
+        }
+
+        .divider {
+            width: 1px;
+            height: 22px;
+            background: #CBD5E1;
+            margin: 0 2px;
+        }
+
+        /* Khung giấy làm bài */
+        .paper-container {
+            width: 100%;
+            max-width: 880px;
+            background: #FFFFFF;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            padding: 38px 42px;
+            font-size: 15.5px;
+            line-height: 1.65;
+            border: 1px solid #E2E8F0;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .header-table td { vertical-align: top; }
+
+        .badge-pro {
+            display: inline-block;
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            color: #047857;
+            border: 1.5px solid #6EE7B7;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: 900;
+            font-size: 20px;
+            text-transform: uppercase;
+            color: #064E3B;
+            margin: 6px 0 4px 0;
+        }
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            font-size: 14px;
+            color: #64748B;
+            margin-bottom: 18px;
+        }
+
+        .score-box {
+            border: 2px solid #047857;
+            width: 100%;
+            margin-bottom: 22px;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .score-box th {
+            background: #ECFDF5;
+            color: #047857;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 900;
+            border: 1px solid #A7F3D0;
+        }
+        .score-box td {
+            border: 1px solid #A7F3D0;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .challenge-card {
+            background: #FFFFFF;
+            border: 2px solid #E2E8F0;
+            border-left: 6px solid #10B981;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .challenge-title {
+            font-weight: 900;
+            font-size: 16px;
+            color: #064E3B;
+        }
+        .challenge-tag {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 20px;
+            background: #D1FAE5;
+            color: #047857;
+        }
+
+        .challenge-desc {
+            font-size: 15px;
+            color: #334155;
+            margin-bottom: 10px;
+        }
+
+        /* Khung viết tay chuyên dụng */
+        .write-box {
+            display: block;
+            width: 100%;
+            border: 2px dashed #A7F3D0;
+            background: #F0FDF4;
+            background-image: repeating-linear-gradient(transparent, transparent 38px, #D1FAE5 39px, #D1FAE5 40px);
+            border-radius: 10px;
+            position: relative;
+            margin: 8px 0 6px 0;
+            touch-action: none;
+        }
+        .write-box:focus-within, .write-box.drawing {
+            border-color: #10B981;
+            background-color: #ECFDF5;
+        }
+
+        .write-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: #059669;
+            font-weight: 800;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        /* Nút nộp bài cuối trang */
+        .bottom-submit-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #A7F3D0;
+        }
+        .big-submit-btn {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Modal popup */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.75);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+        .modal-card {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 28px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-icon { font-size: 55px; margin-bottom: 8px; }
+        .modal-title { font-size: 21px; font-weight: 900; color: #064E3B; margin-bottom: 6px; }
+        .modal-desc { font-size: 14px; color: #64748B; line-height: 1.5; margin-bottom: 18px; }
+        .score-picker {
+            background: #ECFDF5;
+            border: 2px solid #A7F3D0;
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 18px;
+        }
+        .score-stars { font-size: 28px; color: #F59E0B; letter-spacing: 4px; margin: 4px 0; cursor: pointer; }
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal {
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 13.5px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-modal-primary { background: #059669; color: white; }
+        .btn-modal-secondary { background: #F1F5F9; color: #475569; }
+    </style>
+</head>
+<body>
+
+    <!-- THANH CÔNG CỤ BÚT IPAD -->
+    <div class="toolbar">
+        <button class="tool-btn active" id="btn-pen" onclick="setTool('pen')">✏️ Bút viết</button>
+        <button class="tool-btn" id="btn-highlighter" onclick="setTool('highlighter')">🖍️ Dạ quang</button>
+        <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 Tẩy xóa</button>
+        
+        <div class="divider"></div>
+        
+        <!-- Bảng màu mực -->
+        <div class="color-dot active" style="background: #2563EB;" onclick="setColor('#2563EB', this)" title="Mực Xanh"></div>
+        <div class="color-dot" style="background: #DC2626;" onclick="setColor('#DC2626', this)" title="Mực Đỏ"></div>
+        <div class="color-dot" style="background: #1E293B;" onclick="setColor('#1E293B', this)" title="Mực Đen"></div>
+        <div class="color-dot" style="background: #7C3AED;" onclick="setColor('#7C3AED', this)" title="Mực Tím"></div>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" onclick="undoGlobal()" title="Hoàn tác nét vẽ">↩️ Lùi lại</button>
+        <button class="tool-btn" onclick="clearAllCanvases()" style="color: #DC2626;" title="Xóa toàn bộ bài làm">🗑️ Xóa hết</button>
+        
+        <div class="divider"></div>
+
+        <!-- NÚT NỘP BÀI TRÊN TOOLBAR -->
+        <button class="tool-btn btn-submit" onclick="submitHomework()">🚀 Nộp Bài</button>
+    </div>
+
+    <!-- KHUNG TỜ GIẤY BÀI TẬP NÂNG CAO 2 -->
+    <div class="paper-container">
+        
+        <a href="index.html" class="home-link">← 🏠 Quay lại Mục Lục Bài Học</a>
+
+        <div style="text-align: center;">
+            <span class="badge-pro">🌟 THỬ THÁCH TƯ DUY NÂNG CAO – PHIẾU SỐ 2</span>
+        </div>
+
+        <table class="header-table">
+            <tr>
+                <td style="width: 55%;">
+                    <b>HỌ VÀ TÊN:</b> PHẠM PHƯƠNG THẢO<br>
+                    <b>LỚP:</b> 6 ..... &nbsp;&nbsp;|&nbsp;&nbsp; <b>NGÀY:</b> ..... / ..... / 2026
+                </td>
+                <td style="width: 45%; text-align: right;">
+                    <b>PHIẾU CHINH PHỤC NGÔI SAO</b><br>
+                    <b>Thời gian:</b> 45 - 60 phút
+                </td>
+            </tr>
+        </table>
+
+        <div class="title">BÀI 1: TẬP HỢP – TỔ HỢP, QUY LUẬT & NGUYÊN LÝ LOGIC</div>
+        <div class="subtitle">(Phương Thảo suy luận và viết lời giải chi tiết vào các khung bên dưới)</div>
+
+        <table class="score-box">
+            <tr>
+                <th style="width: 30%;">ĐIỂM SỐ</th>
+                <th style="width: 70%;">LỜI PHÊ & ĐÁNH GIÁ TƯ DUY CỦA BỐ</th>
+            </tr>
+            <tr>
+                <td style="height: 52px; font-size: 20pt; font-weight: 900; color: #047857;" id="teacher-score"></td>
+                <td id="teacher-comment" style="font-weight: 600; color: #334155;"></td>
+            </tr>
+        </table>
+
+        <!-- BÀI 1 -->
+        <div class="challenge-card">
+            <div class="challenge-header">
+                <span class="challenge-title">Thử Thách 1: Lập Số Tự Nhiên & Tổ Hợp Chữ Số (2,0 điểm)</span>
+                <span class="challenge-tag">Tổ hợp đếm</span>
+            </div>
+            <div class="challenge-desc">
+                Cho tập hợp các chữ số: <i>D</i> = {0; 2; 5; 7}.<br>
+                a) Có thể lập được bao nhiêu số tự nhiên có <b>3 chữ số khác nhau</b> từ các chữ số thuộc tập hợp <i>D</i>? Hãy viết tập hợp <i>A</i> gồm các số đó.
+            </div>
+            <div class="write-box" style="height: 85px;"><canvas class="write-canvas" id="adv2_q1_a"></canvas></div>
+            
+            <div class="challenge-desc" style="margin-top: 10px;">
+                b) Trong tập hợp <i>A</i> ở câu a, có bao nhiêu số là <b>số chẵn</b>? Hãy viết tập hợp <i>B</i> gồm các số chẵn đó và tìm tập hợp <i>A</i> ∩ <i>B</i>.
+            </div>
+            <div class="write-box" style="height: 85px;"><canvas class="write-canvas" id="adv2_q1_b"></canvas></div>
+        </div>
+
+        <!-- BÀI 2 -->
+        <div class="challenge-card">
+            <div class="challenge-header">
+                <span class="challenge-title">Thử Thách 2: Thám Tử Sơ Đồ Venn 3 Tập Hợp (2,0 điểm)</span>
+                <span class="challenge-tag">Sơ đồ Venn 3 nhóm</span>
+            </div>
+            <div class="challenge-desc">
+                Một nhóm có <b>30 bạn học sinh</b> tham gia các câu lạc bộ năng khiếu:<br>
+                • <b>16 bạn</b> thích Toán, <b>14 bạn</b> thích Vẽ tranh, <b>12 bạn</b> thích Tiếng Anh.<br>
+                • <b>6 bạn</b> thích cả Toán và Vẽ, <b>5 bạn</b> thích cả Toán và Tiếng Anh, <b>4 bạn</b> thích cả Vẽ và Tiếng Anh.<br>
+                • Có <b>2 bạn</b> thích cả 3 môn Toán, Vẽ và Tiếng Anh.<br>
+                a) Có bao nhiêu bạn thích <b>đúng 1 môn</b> trong 3 môn trên?
+            </div>
+            <div class="write-box" style="height: 95px;"><canvas class="write-canvas" id="adv2_q2_a"></canvas></div>
+            
+            <div class="challenge-desc" style="margin-top: 10px;">
+                b) Có bao nhiêu bạn <b>không thích môn nào</b> trong cả 3 môn trên?
+            </div>
+            <div class="write-box" style="height: 75px;"><canvas class="write-canvas" id="adv2_q2_b"></canvas></div>
+        </div>
+
+        <!-- BÀI 3 -->
+        <div class="challenge-card">
+            <div class="challenge-header">
+                <span class="challenge-title">Thử Thách 3: Giải Mã Quy Luật Dãy Số Trong Tập Hợp (2,0 điểm)</span>
+                <span class="challenge-tag">Dãy số quy luật</span>
+            </div>
+            <div class="challenge-desc">
+                Cho tập hợp số vô hạn: <i>P</i> = {3; 7; 11; 15; 19; 23; ...}.<br>
+                a) Hãy chỉ ra tính chất đặc trưng của các phần tử trong tập hợp <i>P</i> (viết công thức tổng quát của phần tử thứ <i>n</i>).
+            </div>
+            <div class="write-box" style="height: 75px;"><canvas class="write-canvas" id="adv2_q3_a"></canvas></div>
+            
+            <div class="challenge-desc" style="margin-top: 10px;">
+                b) Số <b>2027</b> có thuộc tập hợp <i>P</i> không? Nếu có, số 2027 là phần tử thứ bao nhiêu của tập hợp <i>P</i>?
+            </div>
+            <div class="write-box" style="height: 85px;"><canvas class="write-canvas" id="adv2_q3_b"></canvas></div>
+        </div>
+
+        <!-- BÀI 4 -->
+        <div class="challenge-card">
+            <div class="challenge-header">
+                <span class="challenge-title">Thử Thách 4: Kẹp Giữa Hai Tập Hợp (2,0 điểm)</span>
+                <span class="challenge-tag">Tập hợp con trung gian</span>
+            </div>
+            <div class="challenge-desc">
+                Cho hai tập hợp: <i>A</i> = {1; 2} và <i>B</i> = {1; 2; 3; 4; 5}.<br>
+                Hãy tìm tất cả các tập hợp <i>X</i> thỏa mãn điều kiện: <i>A</i> ⊂ <i>X</i> ⊂ <i>B</i>.<br>
+                Có tất cả bao nhiêu tập hợp <i>X</i> như vậy?
+            </div>
+            <div class="write-box" style="height: 120px;"><canvas class="write-canvas" id="adv2_q4"></canvas></div>
+        </div>
+
+        <!-- BÀI 5 -->
+        <div class="challenge-card">
+            <div class="challenge-header">
+                <span class="challenge-title">Thử Thách 5: Câu Đố Chọn Số & Nguyên Lý Lồng Chim (2,0 điểm)</span>
+                <span class="challenge-tag">Nguyên lý Dirichlet</span>
+            </div>
+            <div class="challenge-desc">
+                Cho tập hợp <i>K</i> = {1; 2; 3; 4; 5; 6; 7; 8; 9; 10}.<br>
+                Phương Thảo lấy ngẫu nhiên <b>6 số bất kỳ</b> từ tập hợp <i>K</i>.<br>
+                Em hãy chứng minh rằng trong 6 số được lấy ra, <b>chắc chắn luôn luôn tìm được ít nhất 2 số có tổng bằng 11</b>!
+            </div>
+            <div class="write-box" style="height: 140px;"><canvas class="write-canvas" id="adv2_q5"></canvas></div>
+        </div>
+
+        <!-- NÚT NỘP BÀI CUỐI TRANG -->
+        <div class="bottom-submit-container">
+            <button class="big-submit-btn" onclick="submitHomework()">
+                🏆 HOÀN THÀNH THỬ THÁCH NÂNG CAO 2 🏆
+            </button>
+        </div>
+
+    </div>
+
+    <!-- POPUP CHÚC MỪNG HOÀN THÀNH -->
+    <div class="modal-overlay" id="submit-modal">
+        <div class="modal-card">
+            <div class="modal-icon">🌟 🥇 👑</div>
+            <h2 class="modal-title">CHINH PHỤC ĐỈNH CAO THÀNH CÔNG!</h2>
+            <p class="modal-desc">
+                Chúc mừng <b>Phạm Phương Thảo</b> đã xuất sắc hoàn thành Phiếu nâng cao số 2!<br>
+                Bộ não toán học của con tư duy vô cùng nhanh nhạy!
+            </p>
+
+            <div class="score-picker">
+                <div style="font-size: 13px; font-weight: 800; color: #047857;">BỐ ĐÁNH GIÁ & THƯỞNG ĐIỂM:</div>
+                <div class="score-stars" onclick="giveScore(10)">⭐⭐⭐⭐⭐</div>
+                <div style="font-size: 14px; font-weight: 900; color: #059669;" id="score-text">10 / 10 ĐIỂM XUẤT SẮC TOÀN DIỆN! 💯</div>
+            </div>
+
+            <div class="modal-btn-group">
+                <button class="btn-modal btn-modal-secondary" onclick="closeModal()">✏️ Xem lại bài</button>
+                <a href="index.html" class="btn-modal btn-modal-primary">🏠 Về Trang Chủ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT QUẢN LÝ Ô VIẾT TAY ĐỘC LẬP -->
+    <script>
+        let currentTool = 'pen';
+        let currentColor = '#2563EB';
+        
+        const canvasMap = new Map();
+        const globalStrokeLog = [];
+
+        function initAllCanvases() {
+            const canvases = document.querySelectorAll('.write-canvas');
+            const dpr = window.devicePixelRatio || 1;
+
+            canvases.forEach(canvas => {
+                const parent = canvas.parentElement;
+                const width = parent.offsetWidth;
+                const height = parent.offsetHeight;
+
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+
+                const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (!canvasMap.has(canvas.id)) {
+                    canvasMap.set(canvas.id, {
+                        canvas,
+                        ctx,
+                        width,
+                        height,
+                        strokes: []
+                    });
+                    attachDrawingEvents(canvas);
+                }
+            });
+
+            loadFromStorage();
+        }
+
+        function attachDrawingEvents(canvas) {
+            let isDrawing = false;
+            let lastX = 0, lastY = 0;
+            let currentStroke = null;
+            const parent = canvas.parentElement;
+
+            function getCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.parentElement.offsetWidth / rect.width;
+                const scaleY = canvas.parentElement.offsetHeight / rect.height;
+                return {
+                    x: (e.clientX - rect.left) * scaleX,
+                    y: (e.clientY - rect.top) * scaleY
+                };
+            }
+
+            canvas.addEventListener('pointerdown', (e) => {
+                isDrawing = true;
+                parent.classList.add('drawing');
+                const pos = getCoords(e);
+                lastX = pos.x;
+                lastY = pos.y;
+
+                currentStroke = {
+                    canvasId: canvas.id,
+                    tool: currentTool,
+                    color: currentColor,
+                    points: [{ x: lastX, y: lastY }]
+                };
+            });
+
+            canvas.addEventListener('pointermove', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const pos = getCoords(e);
+                const data = canvasMap.get(canvas.id);
+                const ctx = data.ctx;
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(pos.x, pos.y);
+
+                if (currentTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 22;
+                } else if (currentTool === 'highlighter') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
+                    ctx.lineWidth = 18;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = 2.4;
+                }
+
+                ctx.stroke();
+                lastX = pos.x;
+                lastY = pos.y;
+                currentStroke.points.push({ x: lastX, y: lastY });
+            });
+
+            function endStroke() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    parent.classList.remove('drawing');
+                    if (currentStroke && currentStroke.points.length > 1) {
+                        const data = canvasMap.get(canvas.id);
+                        data.strokes.push(currentStroke);
+                        globalStrokeLog.push(currentStroke);
+                        saveToStorage();
+                    }
+                    currentStroke = null;
+                }
+            }
+
+            canvas.addEventListener('pointerup', endStroke);
+            canvas.addEventListener('pointercancel', endStroke);
+            canvas.addEventListener('pointerleave', endStroke);
+        }
+
+        window.addEventListener('load', initAllCanvases);
+        window.addEventListener('resize', initAllCanvases);
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            if (tool === 'pen') document.getElementById('btn-pen').classList.add('active');
+            if (tool === 'highlighter') document.getElementById('btn-highlighter').classList.add('active');
+            if (tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
+        }
+
+        function setColor(color, elem) {
+            currentColor = color;
+            setTool('pen');
+            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+            if (elem) elem.classList.add('active');
+        }
+
+        function redrawBox(canvasId) {
+            const data = canvasMap.get(canvasId);
+            if (!data) return;
+            const ctx = data.ctx;
+            ctx.clearRect(0, 0, data.canvas.width, data.canvas.height);
+
+            data.strokes.forEach(stroke => {
+                if (stroke.points.length < 2) return;
+                ctx.beginPath();
+                ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+
+                if (stroke.tool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 22;
+                } else if (stroke.tool === 'highlighter') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
+                    ctx.lineWidth = 18;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = stroke.color;
+                    ctx.lineWidth = 2.4;
+                }
+
+                for (let i = 1; i < stroke.points.length; i++) {
+                    ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+                }
+                ctx.stroke();
+            });
+        }
+
+        function undoGlobal() {
+            if (globalStrokeLog.length > 0) {
+                const lastStroke = globalStrokeLog.pop();
+                const data = canvasMap.get(lastStroke.canvasId);
+                if (data) {
+                    data.strokes.pop();
+                    redrawBox(lastStroke.canvasId);
+                    saveToStorage();
+                }
+            }
+        }
+
+        function clearAllCanvases() {
+            if (confirm('Phương Thảo có muốn xóa hết bài làm nâng cao 2 để làm lại từ đầu không?')) {
+                canvasMap.forEach((data, id) => {
+                    data.strokes = [];
+                    data.ctx.clearRect(0, 0, data.canvas.width, data.canvas.height);
+                });
+                globalStrokeLog.length = 0;
+                localStorage.removeItem('toan6_bai1_adv2_slots');
+            }
+        }
+
+        function saveToStorage() {
+            try {
+                const storeObj = {};
+                canvasMap.forEach((data, id) => {
+                    storeObj[id] = data.strokes;
+                });
+                localStorage.setItem('toan6_bai1_adv2_slots', JSON.stringify(storeObj));
+            } catch (e) {}
+        }
+
+        function loadFromStorage() {
+            try {
+                const saved = localStorage.getItem('toan6_bai1_adv2_slots');
+                if (saved) {
+                    const storeObj = JSON.parse(saved);
+                    for (const id in storeObj) {
+                        if (canvasMap.has(id)) {
+                            canvasMap.get(id).strokes = storeObj[id] || [];
+                            redrawBox(id);
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function submitHomework() {
+            document.getElementById('submit-modal').style.display = 'flex';
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                setTimeout(() => {
+                    confetti({ particleCount: 90, angle: 60, spread: 60, origin: { x: 0 } });
+                    confetti({ particleCount: 90, angle: 120, spread: 60, origin: { x: 1 } });
+                }, 300);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('submit-modal').style.display = 'none';
+        }
+
+        function giveScore(score) {
+            document.getElementById('teacher-score').innerText = score;
+            document.getElementById('teacher-comment').innerText = 'Tư duy logic và suy luận cực kỳ xuất sắc!';
+            alert('Bố đã chấm điểm ' + score + ' cho Phương Thảo!');
+        }
+    </script>
+</body>
+</html>
