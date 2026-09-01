@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>Phiếu Bài Tập Toán 6 - Bài 2: Số Tự Nhiên & Số La Mã (Phạm Phương Thảo)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', serif;
+            background: #FFFBEB;
+            color: #0F172A;
+            padding: 75px 12px 60px 12px;
+            display: flex;
+            justify-content: center;
+            touch-action: pan-x pan-y pinch-zoom;
+        }
+
+        /* Thanh công cụ Bút iPad (Sticky Toolbar) */
+        .toolbar {
+            position: fixed;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #F59E0B;
+            padding: 6px 14px;
+            border-radius: 40px;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(12px);
+            max-width: 98vw;
+            overflow-x: auto;
+        }
+
+        .tool-btn {
+            background: #FEF3C7;
+            border: 2px solid transparent;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #78350F;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .tool-btn.active {
+            background: #FDE68A;
+            border-color: #D97706;
+            color: #92400E;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+            color: white !important;
+            border: none !important;
+            padding: 7px 16px !important;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4) !important;
+        }
+
+        .color-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.15s;
+        }
+        .color-dot.active {
+            transform: scale(1.25);
+            outline: 2px solid #D97706;
+        }
+
+        .divider {
+            width: 1px;
+            height: 22px;
+            background: #FCD34D;
+            margin: 0 2px;
+        }
+
+        /* Khung giấy làm bài */
+        .paper-container {
+            width: 100%;
+            max-width: 880px;
+            background: #FFFFFF;
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.08);
+            border-radius: 16px;
+            padding: 38px 42px;
+            font-size: 15.5px;
+            line-height: 1.65;
+            border: 1px solid #FDE68A;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .header-table td { vertical-align: top; }
+
+        .badge-exam {
+            display: inline-block;
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            color: #92400E;
+            border: 1.5px solid #FCD34D;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: 900;
+            font-size: 20px;
+            text-transform: uppercase;
+            color: #92400E;
+            margin: 6px 0 4px 0;
+        }
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            font-size: 14px;
+            color: #64748B;
+            margin-bottom: 18px;
+        }
+
+        .score-box {
+            border: 2px solid #D97706;
+            width: 100%;
+            margin-bottom: 22px;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .score-box th {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 900;
+            border: 1px solid #FDE68A;
+        }
+        .score-box td {
+            border: 1px solid #FDE68A;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-weight: 900;
+            font-size: 15.5px;
+            text-transform: uppercase;
+            margin-top: 22px;
+            margin-bottom: 12px;
+            color: #92400E;
+            border-bottom: 2px solid #D97706;
+            padding-bottom: 3px;
+        }
+
+        /* Khối câu hỏi Trắc nghiệm */
+        .mcq-card {
+            background: #FFFDF5;
+            border: 1.5px solid #FDE68A;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        }
+        .mcq-question {
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #0F172A;
+        }
+        .mcq-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        @media (max-width: 600px) {
+            .mcq-options { grid-template-columns: 1fr; }
+        }
+        .mcq-option {
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mcq-option:hover {
+            border-color: #F59E0B;
+            background: #FEF3C7;
+        }
+        .mcq-option.selected {
+            background: #FEF3C7;
+            border-color: #D97706;
+            color: #92400E;
+            font-weight: 800;
+        }
+
+        /* Khung viết tay tự luận */
+        .write-box {
+            display: block;
+            width: 100%;
+            border: 2px dashed #FCD34D;
+            background: #FFFDF5;
+            background-image: repeating-linear-gradient(transparent, transparent 38px, #FEF3C7 39px, #FEF3C7 40px);
+            border-radius: 10px;
+            position: relative;
+            margin: 8px 0 14px 0;
+            touch-action: none;
+        }
+        .write-box:focus-within, .write-box.drawing {
+            border-color: #D97706;
+            background-color: #FEF3C7;
+        }
+
+        .write-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: #D97706;
+            font-weight: 800;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .bottom-submit-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #FCD34D;
+        }
+        .big-submit-btn {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Modal popup */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.75);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+        .modal-card {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 28px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-icon { font-size: 55px; margin-bottom: 8px; }
+        .modal-title { font-size: 21px; font-weight: 900; color: #92400E; margin-bottom: 6px; }
+        .modal-desc { font-size: 14px; color: #64748B; line-height: 1.5; margin-bottom: 18px; }
+        .score-picker {
+            background: #FFFDF5;
+            border: 2px solid #FDE68A;
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 18px;
+        }
+        .score-stars { font-size: 28px; color: #F59E0B; letter-spacing: 4px; margin: 4px 0; cursor: pointer; }
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal {
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 13.5px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-modal-primary { background: #D97706; color: white; }
+        .btn-modal-secondary { background: #F1F5F9; color: #475569; }
+    </style>
+</head>
+<body>
+
+    <!-- THANH CÔNG CỤ BÚT IPAD -->
+    <div class="toolbar">
+        <button class="tool-btn active" id="btn-pen" onclick="setTool('pen')">✏️ Bút viết</button>
+        <button class="tool-btn" id="btn-highlighter" onclick="setTool('highlighter')">🖍️ Dạ quang</button>
+        <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 Tẩy xóa</button>
+        
+        <div class="divider"></div>
+        
+        <!-- Bảng màu mực -->
+        <div class="color-dot active" style="background: #2563EB;" onclick="setColor('#2563EB', this)" title="Mực Xanh"></div>
+        <div class="color-dot" style="background: #DC2626;" onclick="setColor('#DC2626', this)" title="Mực Đỏ"></div>
+        <div class="color-dot" style="background: #1E293B;" onclick="setColor('#1E293B', this)" title="Mực Đen"></div>
+        <div class="color-dot" style="background: #7C3AED;" onclick="setColor('#7C3AED', this)" title="Mực Tím"></div>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" onclick="undoGlobal()" title="Hoàn tác nét vẽ">↩️ Lùi lại</button>
+        <button class="tool-btn" onclick="clearAllCanvases()" style="color: #DC2626;" title="Xóa bài làm">🗑️ Xóa hết</button>
+        
+        <div class="divider"></div>
+
+        <!-- NÚT NỘP BÀI TRÊN TOOLBAR -->
+        <button class="tool-btn btn-submit" onclick="submitHomework()">🚀 Nộp Bài</button>
+    </div>
+
+    <!-- KHUNG TỜ GIẤY BÀI TẬP BÀI 2 -->
+    <div class="paper-container">
+        
+        <a href="index.html" class="home-link">← 🏠 Quay lại Mục Lục Bài Học</a>
+
+        <div style="text-align: center;">
+            <span class="badge-exam">📝 TOÁN 6 - PHIẾU BÀI TẬP ÔN LUYỆN TOÀN DIỆN</span>
+        </div>
+
+        <table class="header-table">
+            <tr>
+                <td style="width: 55%;">
+                    <b>HỌ VÀ TÊN:</b> PHẠM PHƯƠNG THẢO<br>
+                    <b>LỚP:</b> 6 ..... &nbsp;&nbsp;|&nbsp;&nbsp; <b>NGÀY:</b> ..... / ..... / 2026
+                </td>
+                <td style="width: 45%; text-align: right;">
+                    <b>BÀI 2: TẬP HỢP CÁC SỐ TỰ NHIÊN</b><br>
+                    <b>Thời gian làm bài:</b> 45 - 60 phút
+                </td>
+            </tr>
+        </table>
+
+        <div class="title">CÁCH GHI SỐ TỰ NHIÊN – HỆ THẬP PHÂN – SỐ LA MÃ</div>
+        <div class="subtitle">(Trắc nghiệm chạm chọn đáp án – Tự luận kê bút iPad viết vào các ô kẻ phía dưới)</div>
+
+        <table class="score-box">
+            <tr>
+                <th style="width: 30%;">ĐIỂM SỐ</th>
+                <th style="width: 70%;">LỜI NHẬN XÉT & ĐÁNH GIÁ CỦA BỐ</th>
+            </tr>
+            <tr>
+                <td style="height: 52px; font-size: 20pt; font-weight: 900; color: #D97706;" id="teacher-score"></td>
+                <td id="teacher-comment" style="font-weight: 600; color: #334155;"></td>
+            </tr>
+        </table>
+
+        <!-- PHẦN I: TRẮC NGHIỆM -->
+        <div class="section-title">PHẦN I. TRẮC NGHIỆM NHẬN BIẾT & THÔNG HIỂU (2,0 điểm – Mỗi câu 0,5đ)</div>
+
+        <!-- CÂU 1 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 1 (Dạng 1 - Số tự nhiên & Tia số): Trong các khẳng định sau, khẳng định nào <b>sai</b>?</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(1, 'A', this)">A. Số 0 là số tự nhiên nhỏ nhất.</div>
+                <div class="mcq-option" onclick="selectMCQ(1, 'B', this)">B. Không có số tự nhiên lớn nhất.</div>
+                <div class="mcq-option" onclick="selectMCQ(1, 'C', this)">C. Số 0 có số liền trước là số -1 trong tập hợp <b>N</b>.</div>
+                <div class="mcq-option" onclick="selectMCQ(1, 'D', this)">D. Trên tia số nằm ngang, điểm 5 nằm bên trái điểm 9.</div>
+            </div>
+        </div>
+
+        <!-- CÂU 2 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 2 (Dạng 2 - Giá trị chữ số): Giá trị của chữ số <b>7</b> trong số tự nhiên <b>375 820</b> là:</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(2, 'A', this)">A. 7</div>
+                <div class="mcq-option" onclick="selectMCQ(2, 'B', this)">B. 7 000</div>
+                <div class="mcq-option" onclick="selectMCQ(2, 'C', this)">C. 70 000</div>
+                <div class="mcq-option" onclick="selectMCQ(2, 'D', this)">D. 700 000</div>
+            </div>
+        </div>
+
+        <!-- CÂU 3 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 3 (Dạng 3 - Cấu tạo số): Cho số có 3 chữ số abc (với a ≠ 0). Cách biểu diễn nào sau đây là <b>đúng</b>?</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(3, 'A', this)">A. abc = a + b + c</div>
+                <div class="mcq-option" onclick="selectMCQ(3, 'B', this)">B. abc = 100a + 10b + c</div>
+                <div class="mcq-option" onclick="selectMCQ(3, 'C', this)">C. abc = a × b × c</div>
+                <div class="mcq-option" onclick="selectMCQ(3, 'D', this)">D. abc = 10a + b + c</div>
+            </div>
+        </div>
+
+        <!-- CÂU 4 -->
+        <div class="mcq-card">
+            <div class="mcq-question">Câu 4 (Dạng 4 - Số La Mã): Số La Mã <b>XXIV</b> biểu diễn số tự nhiên nào trong hệ thập phân?</div>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick="selectMCQ(4, 'A', this)">A. 16</div>
+                <div class="mcq-option" onclick="selectMCQ(4, 'B', this)">B. 24</div>
+                <div class="mcq-option" onclick="selectMCQ(4, 'C', this)">C. 26</div>
+                <div class="mcq-option" onclick="selectMCQ(4, 'D', this)">D. 29</div>
+            </div>
+        </div>
+
+        <!-- PHẦN II: TỰ LUẬN -->
+        <div class="section-title">PHẦN II. TỰ LUẬN RÈN LUYỆN 4 DẠNG TOÁN (6,0 điểm)</div>
+
+        <!-- DẠNG 1 -->
+        <div style="margin-bottom: 18px;">
+            <b>Dạng 1: Đọc, viết số tự nhiên & Phân biệt N và N* (1,5 điểm)</b>
+            
+            <div style="margin-top: 6px;">a) Viết số tự nhiên: <i>"Mười hai triệu ba trăm lẻ năm nghìn bốn trăm hai mươi"</i>:</div>
+            <div class="write-box" style="height: 52px;"><canvas class="write-canvas" id="b2_q5_a"></canvas></div>
+
+            <div style="margin-top: 6px;">b) Điền ký hiệu thích hợp (∈ hoặc ∉) vào chỗ trống:</div>
+            <div style="font-weight: 700; margin: 4px 0;">
+                0 ..... <b>N</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                0 ..... <b>N*</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                2026 ..... <b>N*</b>
+            </div>
+            <div class="write-box" style="height: 52px;"><canvas class="write-canvas" id="b2_q5_b"></canvas></div>
+
+            <div style="margin-top: 6px;">c) Tìm số liền trước và số liền sau của: <b>Số lớn nhất có 3 chữ số khác nhau</b>:</div>
+            <div class="write-box" style="height: 58px;"><canvas class="write-canvas" id="b2_q5_c"></canvas></div>
+        </div>
+
+        <!-- DẠNG 2 -->
+        <div style="margin-bottom: 18px;">
+            <b>Dạng 2: Hàng, Lớp và Giá trị chữ số trong hệ thập phân (1,5 điểm)</b>
+            
+            <div style="margin-top: 6px;">a) Cho số tự nhiên: <b>54 827</b>. Em hãy cho biết:
+                <br>• Chữ số <b>5</b> thuộc hàng nào, lớp nào? Giá trị của chữ số 5 là bao nhiêu?
+                <br>• Chữ số <b>8</b> thuộc hàng nào, lớp nào? Giá trị của chữ số 8 là bao nhiêu?
+            </div>
+            <div class="write-box" style="height: 85px;"><canvas class="write-canvas" id="b2_q6_a"></canvas></div>
+
+            <div style="margin-top: 6px;">b) Trong số <b>42 458</b>, chữ số 4 ở hàng chục nghìn có giá trị gấp bao nhiêu lần chữ số 4 ở hàng trăm?</div>
+            <div class="write-box" style="height: 70px;"><canvas class="write-canvas" id="b2_q6_b"></canvas></div>
+        </div>
+
+        <!-- DẠNG 3 -->
+        <div style="margin-bottom: 18px;">
+            <b>Dạng 3: Biểu diễn số thành tổng giá trị các chữ số của nó (1,5 điểm)</b>
+            
+            <div style="margin-top: 6px;">a) Phân tích các số sau thành tổng giá trị các chữ số:
+                <br>• <b>2 456</b> = .................................................................................................................
+                <br>• <b>50 830</b> = .................................................................................................................
+            </div>
+            <div class="write-box" style="height: 80px;"><canvas class="write-canvas" id="b2_q7_a"></canvas></div>
+
+            <div style="margin-top: 6px;">b) Dùng các chữ cái a, b để biểu diễn số:
+                <br>• Số có 2 chữ số ab: ....................................................................................................
+                <br>• Số có 3 chữ số dạng a0b (chữ số hàng chục bằng 0): .....................................................
+            </div>
+            <div class="write-box" style="height: 80px;"><canvas class="write-canvas" id="b2_q7_b"></canvas></div>
+        </div>
+
+        <!-- DẠNG 4 -->
+        <div style="margin-bottom: 18px;">
+            <b>Dạng 4: Đọc và viết các số LA MÃ từ 1 đến 30 (1,5 điểm)</b>
+            
+            <div style="margin-top: 6px;">a) Viết các số sau bằng chữ số La Mã: <b>4, 9, 14, 19, 24, 29</b>:</div>
+            <div class="write-box" style="height: 65px;"><canvas class="write-canvas" id="b2_q8_a"></canvas></div>
+
+            <div style="margin-top: 6px;">b) Đọc giá trị của các số La Mã sau sang hệ thập phân: <b>XVI, XXVII, XXIX</b>:</div>
+            <div class="write-box" style="height: 65px;"><canvas class="write-canvas" id="b2_q8_b"></canvas></div>
+        </div>
+
+        <!-- PHẦN III: NÂNG CAO -->
+        <div class="section-title">PHẦN III. BÀI TOÁN VẬN DỤNG CAO & TƯ DUY TOÁN HỌC (2,0 điểm)</div>
+
+        <!-- CÂU 9 -->
+        <div style="margin-bottom: 18px;">
+            <b>Câu 9 (1,0 điểm – Thử thách tư duy Que diêm La Mã):</b>
+            <div style="margin-top: 4px;">
+                Cho phép tính xếp bằng que diêm số La Mã sau (đang bị sai):<br>
+                <div style="font-size: 20px; font-weight: 900; color: #D97706; text-align: center; margin: 8px 0; background: #FFFBEB; padding: 6px; border-radius: 8px;">
+                    VI = IV - I
+                </div>
+                Em hãy chỉ ra cách <b>di chuyển đúng 1 que diêm</b> để được một phép tính hoàn toàn đúng! (Viết lại phép tính đúng đó).
+            </div>
+            <div class="write-box" style="height: 85px;"><canvas class="write-canvas" id="b2_q9"></canvas></div>
+        </div>
+
+        <!-- CÂU 10 -->
+        <div style="margin-bottom: 18px;">
+            <b>Câu 10 (1,0 điểm – Bí ẩn Cấu tạo số):</b>
+            <div style="margin-top: 4px;">
+                Tìm một số tự nhiên có hai chữ số, biết rằng nếu viết thêm chữ số <b>2</b> vào bên phải số đó thì ta được một số mới lớn hơn số ban đầu <b>191 đơn vị</b>.
+            </div>
+            <div class="write-box" style="height: 120px;"><canvas class="write-canvas" id="b2_q10"></canvas></div>
+        </div>
+
+        <!-- NÚT NỘP BÀI CUỐI TRANG -->
+        <div class="bottom-submit-container">
+            <button class="big-submit-btn" onclick="submitHomework()">
+                🎯 HOÀN THÀNH BÀI ÔN LUYỆN SỐ 2 & NỘP BÀI 🎯
+            </button>
+        </div>
+
+    </div>
+
+    <!-- POPUP CHÚC MỪNG HOÀN THÀNH -->
+    <div class="modal-overlay" id="submit-modal">
+        <div class="modal-card">
+            <div class="modal-icon">🌟 🥇 👑</div>
+            <h2 class="modal-title">HOÀN THÀNH XUẤT SẮC BÀI 2!</h2>
+            <p class="modal-desc">
+                Chúc mừng <b>Phạm Phương Thảo</b> đã chinh phục trọn vẹn cả 4 dạng toán của Bài 2!<br>
+                Bài làm của con đã được lưu trữ an toàn.
+            </p>
+
+            <div class="score-picker">
+                <div style="font-size: 13px; font-weight: 800; color: #92400E;">BỐ CHẤM ĐIỂM BÀI LÀM:</div>
+                <div class="score-stars" onclick="giveScore(10)">⭐⭐⭐⭐⭐</div>
+                <div style="font-size: 14px; font-weight: 900; color: #D97706;" id="score-text">10 / 10 ĐIỂM XUẤT SẮC! 💯</div>
+            </div>
+
+            <div class="modal-btn-group">
+                <button class="btn-modal btn-modal-secondary" onclick="closeModal()">✏️ Xem lại bài</button>
+                <a href="index.html" class="btn-modal btn-modal-primary">🏠 Về Trang Chủ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT QUẢN LÝ Ô VIẾT & TRẮC NGHIỆM -->
+    <script>
+        let currentTool = 'pen';
+        let currentColor = '#2563EB';
+        
+        const canvasMap = new Map();
+        const globalStrokeLog = [];
+        const mcqAnswers = {};
+
+        function selectMCQ(questionNumber, optionKey, element) {
+            mcqAnswers[questionNumber] = optionKey;
+            const parent = element.parentElement;
+            parent.querySelectorAll('.mcq-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            saveToStorage();
+        }
+
+        function initAllCanvases() {
+            const canvases = document.querySelectorAll('.write-canvas');
+            const dpr = window.devicePixelRatio || 1;
+
+            canvases.forEach(canvas => {
+                const parent = canvas.parentElement;
+                const width = parent.offsetWidth;
+                const height = parent.offsetHeight;
+
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+
+                const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (!canvasMap.has(canvas.id)) {
+                    canvasMap.set(canvas.id, {
+                        canvas,
+                        ctx,
+                        width,
+                        height,
+                        strokes: []
+                    });
+                    attachDrawingEvents(canvas);
+                }
+            });
+
+            loadFromStorage();
+        }
+
+        function attachDrawingEvents(canvas) {
+            let isDrawing = false;
+            let lastX = 0, lastY = 0;
+            let currentStroke = null;
+            const parent = canvas.parentElement;
+
+            function getCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.parentElement.offsetWidth / rect.width;
+                const scaleY = canvas.parentElement.offsetHeight / rect.height;
+                return {
+                    x: (e.clientX - rect.left) * scaleX,
+                    y: (e.clientY - rect.top) * scaleY
+                };
+            }
+
+            canvas.addEventListener('pointerdown', (e) => {
+                isDrawing = true;
+                parent.classList.add('drawing');
+                const pos = getCoords(e);
+                lastX = pos.x;
+                lastY = pos.y;
+
+                currentStroke = {
+                    canvasId: canvas.id,
+                    tool: currentTool,
+                    color: currentColor,
+                    points: [{ x: lastX, y: lastY }]
+                };
+            });
+
+            canvas.addEventListener('pointermove', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const pos = getCoords(e);
+                const data = canvasMap.get(canvas.id);
+                const ctx = data.ctx;
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(pos.x, pos.y);
+
+                if (currentTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 22;
+                } else if (currentTool === 'highlighter') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
+                    ctx.lineWidth = 18;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = 2.4;
+                }
+
+                ctx.stroke();
+                lastX = pos.x;
+                lastY = pos.y;
+                currentStroke.points.push({ x: lastX, y: lastY });
+            });
+
+            function endStroke() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    parent.classList.remove('drawing');
+                    if (currentStroke && currentStroke.points.length > 1) {
+                        const data = canvasMap.get(canvas.id);
+                        data.strokes.push(currentStroke);
+                        globalStrokeLog.push(currentStroke);
+                        saveToStorage();
+                    }
+                    currentStroke = null;
+                }
+            }
+
+            canvas.addEventListener('pointerup', endStroke);
+            canvas.addEventListener('pointercancel', endStroke);
+            canvas.addEventListener('pointerleave', endStroke);
+        }
+
+        window.addEventListener('load', initAllCanvases);
+        window.addEventListener('resize', initAllCanvases);
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            if (tool === 'pen') document.getElementById('btn-pen').classList.add('active');
+            if (tool === 'highlighter') document.getElementById('btn-highlighter').classList.add('active');
+            if (tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
+        }
+
+        function setColor(color, elem) {
+            currentColor = color;
+            setTool('pen');
+            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+            if (elem) elem.classList.add('active');
+        }
+
+        function redrawBox(canvasId) {
+            const data = canvasMap.get(canvasId);
+            if (!data) return;
+            const ctx = data.ctx;
+            ctx.clearRect(0, 0, data.canvas.width, data.canvas.height);
+
+            data.strokes.forEach(stroke => {
+                if (stroke.points.length < 2) return;
+                ctx.beginPath();
+                ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+
+                if (stroke.tool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 22;
+                } else if (stroke.tool === 'highlighter') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = 'rgba(254, 240, 138, 0.45)';
+                    ctx.lineWidth = 18;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = stroke.color;
+                    ctx.lineWidth = 2.4;
+                }
+
+                for (let i = 1; i < stroke.points.length; i++) {
+                    ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+                }
+                ctx.stroke();
+            });
+        }
+
+        function undoGlobal() {
+            if (globalStrokeLog.length > 0) {
+                const lastStroke = globalStrokeLog.pop();
+                const data = canvasMap.get(lastStroke.canvasId);
+                if (data) {
+                    data.strokes.pop();
+                    redrawBox(lastStroke.canvasId);
+                    saveToStorage();
+                }
+            }
+        }
+
+        function clearAllCanvases() {
+            if (confirm('Phương Thảo có muốn xóa toàn bộ bài làm để làm lại không?')) {
+                canvasMap.forEach((data, id) => {
+                    data.strokes = [];
+                    data.ctx.clearRect(0, 0, data.canvas.width, data.canvas.height);
+                });
+                globalStrokeLog.length = 0;
+                document.querySelectorAll('.mcq-option').forEach(opt => opt.classList.remove('selected'));
+                for (const key in mcqAnswers) delete mcqAnswers[key];
+                localStorage.removeItem('toan6_bai2_practice_data');
+            }
+        }
+
+        function saveToStorage() {
+            try {
+                const storeObj = { strokes: {}, mcq: mcqAnswers };
+                canvasMap.forEach((data, id) => {
+                    storeObj.strokes[id] = data.strokes;
+                });
+                localStorage.setItem('toan6_bai2_practice_data', JSON.stringify(storeObj));
+            } catch (e) {}
+        }
+
+        function loadFromStorage() {
+            try {
+                const saved = localStorage.getItem('toan6_bai2_practice_data');
+                if (saved) {
+                    const storeObj = JSON.parse(saved);
+                    if (storeObj.strokes) {
+                        for (const id in storeObj.strokes) {
+                            if (canvasMap.has(id)) {
+                                canvasMap.get(id).strokes = storeObj.strokes[id] || [];
+                                redrawBox(id);
+                            }
+                        }
+                    }
+                    if (storeObj.mcq) {
+                        for (const qNum in storeObj.mcq) {
+                            const optKey = storeObj.mcq[qNum];
+                            mcqAnswers[qNum] = optKey;
+                            const cards = document.querySelectorAll('.mcq-card');
+                            if (cards[qNum - 1]) {
+                                const opts = cards[qNum - 1].querySelectorAll('.mcq-option');
+                                opts.forEach(opt => {
+                                    if (opt.innerText.startsWith(optKey)) opt.classList.add('selected');
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function submitHomework() {
+            document.getElementById('submit-modal').style.display = 'flex';
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                setTimeout(() => {
+                    confetti({ particleCount: 90, angle: 60, spread: 60, origin: { x: 0 } });
+                    confetti({ particleCount: 90, angle: 120, spread: 60, origin: { x: 1 } });
+                }, 300);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('submit-modal').style.display = 'none';
+        }
+
+        function giveScore(score) {
+            document.getElementById('teacher-score').innerText = score;
+            document.getElementById('teacher-comment').innerText = 'Con làm bài rất xuất sắc!';
+            alert('Bố đã chấm điểm ' + score + ' cho Phương Thảo!');
+        }
+    </script>
+</body>
+</html>
